@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-content">
+
+        <a href="index.html" class="logo">
+            StayFinder
+        </a>
+
+        <nav class="nav">
+            <a href="rooms.html">Rooms</a>
+            <a href="bookings.html">My bookings</a>
+            <a href="support.html">Support</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="link-button">List your property</button>
+            <a href="login.html" class="sign-in-button">Sign in</a>
+        </div>
+
+    </div>
+</header>
+
+<!-- Hero + Search -->
+<main>
+    <section class="hero">
+        <div class="container">
+
+            <h1>Your next stay starts here</h1>
+            <p>Search rooms, compare prices and book your perfect hotel stay.</p>
+
+            <form class="search-box" action="rooms.html">
+
+                <h2 class="search-title">
+                    Choose date, time and number of guests
+                </h2>
+
+                <div class="search-row">
+
+                    <div class="search-field">
+                        <label>Check-in date</label>
+                        <input type="date" name="checkIn">
+                    </div>
+
+                    <div class="search-field">
+                        <label>Check-out date</label>
+                        <input type="date" name="checkOut">
+                    </div>
+
+                    <div class="search-field">
+                        <label>Guests</label>
+                        <input type="number" name="guests" placeholder="2 guests" min="1">
+                    </div>
+
+                    <button class="search-button" type="submit">
+                        Search
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+
+            <div class="section-header">
+                <h2>Why choose StayFinder?</h2>
+                <p>Everything you need for a simple and comfortable hotel booking experience.</p>
+            </div>
+
+            <div class="features-grid">
+
+                <div class="feature-card">
+                    <h3>Easy booking</h3>
+                    <p>Choose your dates, number of guests and find a suitable room in seconds.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Different room types</h3>
+                    <p>From standard rooms to luxury suites and presidential rooms.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Flexible capacity</h3>
+                    <p>Find rooms for 1, 2, 3, 4 or 6 guests depending on your trip.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section class="room-types-section">
+        <div class="container">
+
+            <div class="section-header">
+                <h2>Explore our room types</h2>
+                <p>Choose the room category that fits your stay best.</p>
+            </div>
+
+            <div class="room-types-grid">
+
+                <div class="room-type-card">
+                    <h3>Standard Room</h3>
+                    <p>Comfortable and affordable rooms for everyday stays.</p>
+
+                    <details class="room-details">
+                        <summary>More details</summary>
+                        <p>Standard rooms are suitable for short stays and offer all basic hotel facilities.</p>
+                    </details>
+
+                    <a href="rooms.html">View rooms</a>
+                </div>
+
+                <div class="room-type-card">
+                    <h3>Deluxe Room</h3>
+                    <p>More space and comfort for a relaxing hotel experience.</p>
+
+                    <details class="room-details">
+                        <summary>More details</summary>
+                        <p>Deluxe rooms provide extra comfort, more space and a better stay experience.</p>
+                    </details>
+
+                    <a href="rooms.html">View rooms</a>
+                </div>
+
+                <div class="room-type-card">
+                    <h3>Suite Room</h3>
+                    <p>Luxury rooms with extra comfort for special stays.</p>
+
+                    <details class="room-details">
+                        <summary>More details</summary>
+                        <p>Suite rooms are designed for guests who want a more luxurious and spacious room.</p>
+                    </details>
+
+                    <a href="rooms.html">View rooms</a>
+                </div>
+
+                <div class="room-type-card">
+                    <h3>Presidential Room</h3>
+                    <p>Premium rooms for guests who want the best experience.</p>
+
+                    <details class="room-details">
+                        <summary>More details</summary>
+                        <p>Presidential rooms are the most premium rooms, suitable for up to 6 guests.</p>
+                    </details>
+
+                    <a href="rooms.html">View rooms</a>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section class="how-section">
+        <div class="container">
+
+            <div class="section-header">
+                <h2>How it works</h2>
+                <p>Book your room in three simple steps.</p>
+            </div>
+
+            <div class="steps-grid">
+
+                <div class="step-card">
+                    <span>1</span>
+                    <h3>Choose dates</h3>
+                    <p>Select your check-in and check-out dates.</p>
+                </div>
+
+                <div class="step-card">
+                    <span>2</span>
+                    <h3>Select room</h3>
+                    <p>Find a room that matches your number of guests.</p>
+                </div>
+
+                <div class="step-card">
+                    <span>3</span>
+                    <h3>Confirm booking</h3>
+                    <p>Book your stay and manage it in your account.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <div class="container footer-content">
+
+        <div>
+            <h3>StayFinder</h3>
+            <p>Simple hotel booking system for comfortable stays.</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="rooms.html">Rooms</a>
+            <a href="deals.html">Deals</a>
+            <a href="bookings.html">My bookings</a>
+            <a href="support.html">Support</a>
+        </div>
+
+    </div>
+
+    <p class="footer-bottom">© 2026 StayFinder. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
