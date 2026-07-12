@@ -12,14 +12,38 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
 
-    private int number;
+    private Integer roomNumber;
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     private RoomType type;
 
-
     private int capacity;
-    private boolean isAvailable;
+    private boolean available;
+
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public Integer getRoomNumber() {
+        return roomNumber;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public RoomType getType() {
+        return type;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
 
 }
