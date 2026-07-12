@@ -1,0 +1,49 @@
+package com.hotel.booking.entity;
+
+import com.hotel.booking.entity.enums.RoomType;
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+
+
+@Entity
+public class Room {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long roomId;
+
+    private Integer roomNumber;
+    private BigDecimal price;
+
+    @Enumerated(EnumType.STRING)
+    private RoomType type;
+
+    private int capacity;
+    private boolean available;
+
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public Integer getRoomNumber() {
+        return roomNumber;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public RoomType getType() {
+        return type;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+}
