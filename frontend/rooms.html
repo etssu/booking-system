@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rooms | StayFinder</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-content">
+
+        <a href="index.html" class="logo">
+            StayFinder
+        </a>
+
+        <nav class="nav">
+            <a href="rooms.html">Rooms</a>
+            <a href="deals.html">Deals</a>
+            <a href="bookings.html">My bookings</a>
+            <a href="support.html">Support</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="link-button">List your property</button>
+            <a href="login.html" class="sign-in-button">Sign in</a>
+        </div>
+
+    </div>
+</header>
+
+<main>
+    <section class="rooms-page">
+        <div class="container">
+
+            <div class="rooms-header">
+                <h1>Available rooms</h1>
+                <p>Choose the best room for your next comfortable stay.</p>
+            </div>
+
+            <form class="rooms-filter" id="roomsFilter">
+
+                <div class="filter-field">
+                    <label>Check-in date</label>
+                    <input type="date">
+                </div>
+
+                <div class="filter-field">
+                    <label>Check-out date</label>
+                    <input type="date">
+                </div>
+
+                <div class="filter-field">
+                    <label>Guests</label>
+                    <input id="guestsInput" type="number" placeholder="2 guests" min="1">
+                </div>
+
+                <button class="filter-button" type="submit">
+                    Search
+                </button>
+
+            </form>
+
+            <p class="results-text" id="resultsText">
+                All available rooms
+            </p>
+
+            <div class="rooms-grid" id="roomsGrid"></div>
+
+
+        </div>
+    </section>
+</main>
+
+    <script src="rooms.js"></script>
+</body>
+</html>

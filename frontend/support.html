@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support | StayFinder</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-content">
+
+        <a href="index.html" class="logo">
+            StayFinder
+        </a>
+
+        <nav class="nav">
+            <a href="rooms.html">Rooms</a>
+            <a href="deals.html">Deals</a>
+            <a href="bookings.html">My bookings</a>
+            <a href="support.html">Support</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="link-button">List your property</button>
+            <a href="login.html" class="sign-in-button">Sign in</a>
+        </div>
+
+    </div>
+</header>
+
+<main>
+    <section class="support-page">
+        <div class="container">
+
+            <div class="support-header">
+                <h1>How can we help?</h1>
+                <p>Find answers to common questions or contact our support team.</p>
+            </div>
+
+            <div class="support-layout">
+
+                <div class="faq-section">
+                    <h2>Frequently asked questions</h2>
+
+                    <details class="faq-item">
+                        <summary>How can I book a room?</summary>
+                        <p>Go to the Rooms page, choose your dates and number of guests, then select a suitable room.</p>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary>Can I cancel my booking?</summary>
+                        <p>Yes, you can cancel your reservation from the My bookings page.</p>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary>How do I choose the right room?</summary>
+                        <p>You can filter rooms by capacity. The system will show rooms that match the selected number of guests.</p>
+                    </details>
+
+                    <details class="faq-item">
+                        <summary>Do I need an account?</summary>
+                        <p>For the final version, users will need an account to manage bookings and view reservation history.</p>
+                    </details>
+                </div>
+
+                <div class="contact-card">
+                    <h2>Contact support</h2>
+                    <p class="contact-text">Send us a message and we will help you as soon as possible.</p>
+
+                    <form class="support-form" id="supportForm">
+
+                        <div class="support-field">
+                            <label>Your name</label>
+                            <input type="text" placeholder="Enter your name" required>
+                        </div>
+
+                        <div class="support-field">
+                            <label>Email</label>
+                            <input type="email" placeholder="Enter your email" required>
+                        </div>
+
+                        <div class="support-field">
+                            <label>Topic</label>
+                            <select required>
+                                <option value="">Choose topic</option>
+                                <option>Booking problem</option>
+                                <option>Room information</option>
+                                <option>Payment question</option>
+                                <option>Account problem</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="support-field">
+                            <label>Message</label>
+                            <textarea placeholder="Write your message" required></textarea>
+                        </div>
+
+                        <button class="support-button" type="submit">
+                            Send message
+                        </button>
+
+                        <p class="support-success" id="supportSuccess">
+                            Your message has been sent successfully.
+                        </p>
+
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="contact-info-grid">
+
+                <div class="contact-info-card">
+                    <h3>Email</h3>
+                    <p>support@stayfinder.com</p>
+                </div>
+
+                <div class="contact-info-card">
+                    <h3>Phone</h3>
+                    <p>+421 900 123 456</p>
+                </div>
+
+                <div class="contact-info-card">
+                    <h3>Working hours</h3>
+                    <p>Monday — Friday, 9:00 — 18:00</p>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<script src="support.js"></script>
+</body>
+</html>
