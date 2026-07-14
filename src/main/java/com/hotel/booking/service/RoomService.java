@@ -46,6 +46,7 @@ public class RoomService {
         room.setCapacity(updatedRoom.getCapacity());
         room.setPrice(updatedRoom.getPrice());
         room.setAvailable(updatedRoom.isAvailable());
+        room.setRoomNumber(updatedRoom.getRoomNumber());
 
         return roomRepository.save(room);
     }
