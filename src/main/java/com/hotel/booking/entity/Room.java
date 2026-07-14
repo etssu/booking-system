@@ -62,4 +62,8 @@ public class Room {
         this.available = available;
     }
 
+    public void setRoomNumber(Integer roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
 }
