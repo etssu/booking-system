@@ -2,9 +2,8 @@ package com.hotel.booking.controller;
 
 
 import com.hotel.booking.entity.Booking;
-import com.hotel.booking.entity.Room;
 import com.hotel.booking.service.BookingService;
-import com.hotel.booking.service.RoomService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,19 +13,17 @@ import java.util.List;
 @RequestMapping("/api/bookings")
 public class BookingController {
     private final BookingService bookingService;
-    private final RoomService roomService;
 
-    public BookingController(BookingService bookingService, RoomService roomService) {
+    public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
-        this.roomService = roomService;
     }
 
     @GetMapping
     public List<Booking> getBookings() { return bookingService.getAllBookings(); }
 
     @GetMapping("/{id}")
-    public Booking getBooking(@PathVariable Long id) {
-        return bookingService.getBookingById(id);
+    public ResponseEntity<Booking> getBooking(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.getBookingById(id));
     }
 
     @PutMapping("/{id}")
@@ -38,8 +35,9 @@ public class BookingController {
     }
 
     @PostMapping
-    public Booking createBooking(@RequestBody Booking booking) {
-        return bookingService.createBooking(booking);
+    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
+        Booking created = bookingService.createBooking(booking);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @DeleteMapping("/{id}")
