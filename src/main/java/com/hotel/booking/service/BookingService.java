@@ -10,11 +10,10 @@ import java.util.List;
 @Service
 public class BookingService {
     private final BookingRepository bookingRepository;
-    private final RoomRepository roomRepository;
 
-    public BookingService(BookingRepository bookingRepository, RoomRepository roomRepository) {
+
+    public BookingService(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
-        this.roomRepository = roomRepository;
     }
 
     public List<Booking> getAllBookings() {
