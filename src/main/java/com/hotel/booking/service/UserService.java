@@ -38,6 +38,8 @@ public class UserService {
         user.setPassword(updatedUser.getPassword());
         user.setEmail(updatedUser.getEmail());
         user.setRole(updatedUser.getRole());
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
 
         return userRepository.save(user);
     }

@@ -1,15 +1,15 @@
 package com.hotel.booking.controller;
 
 import com.hotel.booking.entity.User;
-import com.hotel.booking.repository.UserRepository;
 import com.hotel.booking.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/users")
 public class UserControlling {
     private final UserService userService;
 
@@ -27,7 +27,7 @@ public class UserControlling {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User user) {
         return userService.updateUser(id, user);
     }
@@ -35,7 +35,7 @@ public class UserControlling {
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User created = userService.createUser(user);
-        return ResponseEntity.ok(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
     
     @DeleteMapping("/{id}")

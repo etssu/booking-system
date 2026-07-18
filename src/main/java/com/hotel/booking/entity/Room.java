@@ -4,6 +4,7 @@ import com.hotel.booking.entity.enums.RoomType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 @Entity
@@ -20,6 +21,9 @@ public class Room {
 
     private int capacity;
     private boolean available;
+
+    @OneToMany(mappedBy = "room")
+    private List<Booking> bookings;
 
 
     public Long getRoomId() {
