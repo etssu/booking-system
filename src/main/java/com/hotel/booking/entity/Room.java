@@ -4,13 +4,14 @@ import com.hotel.booking.entity.enums.RoomType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 @Entity
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomId;
+    private Long id;
 
     private Integer roomNumber;
     private BigDecimal price;
@@ -21,9 +22,12 @@ public class Room {
     private int capacity;
     private boolean available;
 
+    @OneToMany(mappedBy = "room")
+    private List<Booking> bookings;
 
-    public Long getRoomId() {
-        return roomId;
+
+    public Long getId() {
+        return id;
     }
 
     public Integer getRoomNumber() {

@@ -1,7 +1,9 @@
 package com.hotel.booking.entity.enums;
 
 public enum BookingStatus {
-    CONFIRMED,
-    CANCELLED,
-    COMPLETED
+    PENDING,
+    APPROVED,
+    CHECK_IN,
+    COMPLETED,
+    CANCELED
 }
