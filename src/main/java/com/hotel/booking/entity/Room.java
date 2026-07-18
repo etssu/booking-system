@@ -11,7 +11,7 @@ import java.util.List;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomId;
+    private Long id;
 
     private Integer roomNumber;
     private BigDecimal price;
@@ -26,8 +26,8 @@ public class Room {
     private List<Booking> bookings;
 
 
-    public Long getRoomId() {
-        return roomId;
+    public Long getId() {
+        return id;
     }
 
     public Integer getRoomNumber() {
