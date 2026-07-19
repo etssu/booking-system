@@ -8,6 +8,7 @@ import com.hotel.booking.repository.RoomRepository;
 import com.hotel.booking.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -15,6 +16,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+    private LocalDate today = LocalDate.now();
 
 
     public BookingService(
@@ -45,6 +47,28 @@ public class BookingService {
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             booking.setUser(user);
+        }
+
+        if (booking.getCheckIn().isAfter(booking.getCheckOut())) {
+            throw new IllegalArgumentException("Check-in date must be before check-out date");
+        }
+
+        if (booking.getCheckIn().isBefore(today)) {
+            throw new IllegalArgumentException("You cannot book a date before today");
+        }
+
+        if (!booking.getCheckOut().isAfter(booking.getCheckIn())) {
+            throw new IllegalArgumentException("Check-out date must be after check-in date");
+        }
+
+        boolean exists = bookingRepository.existsOverlappingBooking(    // checking if overlapping booking exists
+                booking.getRoom(),
+                booking.getCheckIn(),
+                booking.getCheckOut()
+        );
+
+        if (exists) {
+            throw new IllegalArgumentException("Room is already booked for these dates");
         }
 
         return bookingRepository.save(booking);

@@ -1,6 +1,7 @@
 package com.hotel.booking.service;
 
 import com.hotel.booking.entity.User;
+import com.hotel.booking.entity.enums.Role;
 import com.hotel.booking.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,12 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        user.setRole(Role.GUEST);
         return userRepository.save(user);
     }
 
     public User updateUser(Long id, User updatedUser) {
-        User user =  userRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setUsername(updatedUser.getUsername());
