@@ -5,6 +5,7 @@ import com.hotel.booking.repository.RoomRepository;
 import com.hotel.booking.entity.Room;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,10 +27,6 @@ public class RoomService {
                 .orElseThrow();
     }
 
-    public List<Room> getAvailableRooms() {
-        return roomRepository.findByAvailableTrue();
-    }
-
     public List<Room> getRoomsByType(RoomType type) {
         return roomRepository.findByType(type);
     }
@@ -45,7 +42,6 @@ public class RoomService {
         room.setType(updatedRoom.getType());
         room.setCapacity(updatedRoom.getCapacity());
         room.setPrice(updatedRoom.getPrice());
-        room.setAvailable(updatedRoom.isAvailable());
         room.setRoomNumber(updatedRoom.getRoomNumber());
 
         return roomRepository.save(room);
@@ -60,5 +56,9 @@ public class RoomService {
                 .orElseThrow(() -> new RuntimeException("Room not found"));
 
         roomRepository.delete(room);
+    }
+
+    public List<Room> getAvailableRooms(LocalDate checkIn, LocalDate checkOut) {
+        return roomRepository.findAvailableRooms(checkIn, checkOut);
     }
 }

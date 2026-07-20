@@ -20,7 +20,6 @@ public class Room {
     private RoomType type;
 
     private int capacity;
-    private boolean available;
 
     @OneToMany(mappedBy = "room")
     private List<Booking> bookings;
@@ -46,10 +45,6 @@ public class Room {
         return capacity;
     }
 
-    public boolean isAvailable() {
-        return available;
-    }
-
     public void setType(RoomType type) {
         this.type = type;
     }
@@ -60,10 +55,6 @@ public class Room {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
     }
 
     public void setRoomNumber(Integer roomNumber) {
