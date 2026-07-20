@@ -1,5 +1,6 @@
 package com.hotel.booking.service;
 
+import com.hotel.booking.dto.BookingResponseDTO;
 import com.hotel.booking.entity.Booking;
 import com.hotel.booking.entity.Room;
 import com.hotel.booking.entity.User;
@@ -30,8 +31,11 @@ public class BookingService {
         this.userRepository = userRepository;
     }
 
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+    public List<BookingResponseDTO> getAllBookings() {
+        return bookingRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     public Booking createBooking(Booking booking) {
@@ -76,19 +80,34 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
-    public Booking getBookingById(Long id) {
-        return bookingRepository.findById(id)
+    public BookingResponseDTO getBookingById(Long id) {
+        Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        return convertToDTO(booking);
     }
 
     public Booking updateBooking(Long id, Booking updatedBooking) {
-        Booking booking  = bookingRepository.findById(id)
+        Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         booking.setCheckIn(updatedBooking.getCheckIn());
         booking.setCheckOut(updatedBooking.getCheckOut());
         booking.setNumberOfGuests(updatedBooking.getNumberOfGuests());
-        booking.setRoom(updatedBooking.getRoom());
+
+        if (updatedBooking.getRoom() != null) {
+            Room room = roomRepository.findById(updatedBooking.getRoom().getId())
+                    .orElseThrow(() -> new RuntimeException("Room not found"));
+
+            booking.setRoom(room);
+        }
+
+        if (updatedBooking.getUser() != null) {
+            User user = userRepository.findById(updatedBooking.getUser().getId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            booking.setUser(user);
+        }
 
         return bookingRepository.save(booking);
     }
@@ -125,6 +144,25 @@ public class BookingService {
 
             case COMPLETED, CANCELLED -> false;
         };
+    }
+
+    public BookingResponseDTO convertToDTO(Booking booking) {
+
+        String guestName = booking.getUser().getFirstName()
+                + " "
+                + booking.getUser().getLastName();
+
+        return new BookingResponseDTO(
+                booking.getId(),
+                booking.getCheckIn(),
+                booking.getCheckOut(),
+                booking.getNumberOfGuests(),
+                booking.getStatus(),
+                booking.getUser().getId(),
+                guestName,
+                booking.getRoom().getId(),
+                booking.getRoom().getRoomNumber()
+        );
     }
 
 }

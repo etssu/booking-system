@@ -1,6 +1,7 @@
 package com.hotel.booking.controller;
 
 
+import com.hotel.booking.dto.BookingResponseDTO;
 import com.hotel.booking.dto.BookingStatusRequest;
 import com.hotel.booking.entity.Booking;
 import com.hotel.booking.service.BookingService;
@@ -20,25 +21,34 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<Booking> getBookings() { return bookingService.getAllBookings(); }
+    public ResponseEntity<List<BookingResponseDTO>> getAllBookings() {
+        return ResponseEntity.ok(bookingService.getAllBookings());
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBooking(@PathVariable Long id) {
+    public ResponseEntity<BookingResponseDTO> getBooking(@PathVariable Long id) {
         return ResponseEntity.ok(bookingService.getBookingById(id));
     }
 
     @PutMapping("/{id}")
-    public Booking updateBooking(
+    public ResponseEntity<BookingResponseDTO> updateBooking(
             @PathVariable Long id,
             @RequestBody Booking booking
     ) {
-        return bookingService.updateBooking(id, booking);
+        Booking updated = bookingService.updateBooking(id, booking);
+
+        return ResponseEntity.ok(
+                bookingService.convertToDTO(updated)
+        );
     }
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
+    public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody Booking booking) {
         Booking created = bookingService.createBooking(booking);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(bookingService.convertToDTO(created));
     }
 
     @DeleteMapping("/{id}")
@@ -48,13 +58,14 @@ public class BookingController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Booking> updateStatus(
+    public ResponseEntity<BookingResponseDTO> updateStatus(
             @PathVariable Long id,
             @RequestBody BookingStatusRequest request
     ) {
-        System.out.println(request.getStatus());
+        Booking updated = bookingService.updateBookingStatus(id, request.getStatus());
+
         return ResponseEntity.ok(
-                bookingService.updateBookingStatus(id, request.getStatus())
+                bookingService.convertToDTO(updated)
         );
     }
 
