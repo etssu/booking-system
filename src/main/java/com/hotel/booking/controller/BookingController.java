@@ -1,6 +1,7 @@
 package com.hotel.booking.controller;
 
 
+import com.hotel.booking.dto.BookingStatusRequest;
 import com.hotel.booking.entity.Booking;
 import com.hotel.booking.service.BookingService;
 import org.springframework.http.HttpStatus;
@@ -45,4 +46,16 @@ public class BookingController {
         bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Booking> updateStatus(
+            @PathVariable Long id,
+            @RequestBody BookingStatusRequest request
+    ) {
+        System.out.println(request.getStatus());
+        return ResponseEntity.ok(
+                bookingService.updateBookingStatus(id, request.getStatus())
+        );
+    }
+
 }

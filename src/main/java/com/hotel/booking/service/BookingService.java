@@ -3,6 +3,7 @@ package com.hotel.booking.service;
 import com.hotel.booking.entity.Booking;
 import com.hotel.booking.entity.Room;
 import com.hotel.booking.entity.User;
+import com.hotel.booking.entity.enums.BookingStatus;
 import com.hotel.booking.repository.BookingRepository;
 import com.hotel.booking.repository.RoomRepository;
 import com.hotel.booking.repository.UserRepository;
@@ -71,6 +72,7 @@ public class BookingService {
             throw new IllegalArgumentException("Room is already booked for these dates");
         }
 
+        booking.setStatus(BookingStatus.PENDING);
         return bookingRepository.save(booking);
     }
 
@@ -96,6 +98,33 @@ public class BookingService {
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         bookingRepository.delete(booking);
+    }
+
+    public Booking updateBookingStatus(Long id, BookingStatus status) {
+        Booking booking = bookingRepository.findById(id).orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (!isValidTransition(booking.getStatus(), status)) {
+            throw new IllegalArgumentException(
+                    "Invalid booking status transition"
+            );
+        }
+
+        booking.setStatus(status);
+        return bookingRepository.save(booking);
+    }
+
+    private boolean isValidTransition(BookingStatus current, BookingStatus next) {
+        return switch (current) {
+            case PENDING -> next == BookingStatus.CONFIRMED ||
+                            next == BookingStatus.CANCELLED;
+
+            case CONFIRMED -> next == BookingStatus.CHECKED_IN ||
+                            next == BookingStatus.CANCELLED;
+
+            case CHECKED_IN -> next == BookingStatus.COMPLETED;
+
+            case COMPLETED, CANCELLED -> false;
+        };
     }
 
 }
