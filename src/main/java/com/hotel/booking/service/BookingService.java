@@ -1,13 +1,9 @@
 package com.hotel.booking.service;
 
 import com.hotel.booking.dto.BookingResponseDTO;
-import com.hotel.booking.entity.Booking;
-import com.hotel.booking.entity.Room;
-import com.hotel.booking.entity.User;
+import com.hotel.booking.entity.*;
 import com.hotel.booking.entity.enums.BookingStatus;
-import com.hotel.booking.repository.BookingRepository;
-import com.hotel.booking.repository.RoomRepository;
-import com.hotel.booking.repository.UserRepository;
+import com.hotel.booking.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,8 +17,7 @@ public class BookingService {
     private LocalDate today = LocalDate.now();
 
 
-    public BookingService(
-            BookingRepository bookingRepository,
+    public BookingService(BookingRepository bookingRepository,
             RoomRepository roomRepository,
             UserRepository userRepository
     ) {
@@ -39,7 +34,6 @@ public class BookingService {
     }
 
     public Booking createBooking(Booking booking) {
-
         if (booking.getRoom() != null) {
             Room room = roomRepository.findById(booking.getRoom().getId())
                     .orElseThrow(() -> new RuntimeException("Room not found"));
@@ -107,6 +101,29 @@ public class BookingService {
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             booking.setUser(user);
+        }
+
+        if (booking.getCheckIn().isAfter(booking.getCheckOut())) {
+            throw new IllegalArgumentException("Check-in date must be before check-out date");
+        }
+
+        if (booking.getCheckIn().isBefore(today)) {
+            throw new IllegalArgumentException("You cannot book a date before today");
+        }
+
+        if (!booking.getCheckOut().isAfter(booking.getCheckIn())) {
+            throw new IllegalArgumentException("Check-out date must be after check-in date");
+        }
+
+        boolean exists = bookingRepository.existsOverlappingBookingExceptId(
+                booking.getRoom(),
+                booking.getCheckIn(),
+                booking.getCheckOut(),
+                id
+        );
+
+        if (exists) {
+            throw new IllegalArgumentException("Room is already booked for these dates");
         }
 
         return bookingRepository.save(booking);

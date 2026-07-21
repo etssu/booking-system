@@ -24,4 +24,19 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("checkIn") LocalDate checkIn,
             @Param("checkOut") LocalDate checkOut
     );
+
+    @Query("""
+        SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END
+        FROM Booking b
+        WHERE b.room = :room
+        AND b.checkIn < :checkOut
+        AND b.checkOut > :checkIn
+        AND b.id <> :bookingId
+    """)
+    boolean existsOverlappingBookingExceptId(
+            @Param("room") Room room,
+            @Param("checkIn") LocalDate checkIn,
+            @Param("checkOut") LocalDate checkOut,
+            @Param("id") Long id
+    );
 }
