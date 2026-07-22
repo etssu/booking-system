@@ -16,6 +16,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
         SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END
         FROM Booking b
         WHERE b.room = :room
+        AND b.status <> com.hotel.booking.entity.enums.BookingStatus.CANCELLED
         AND b.checkIn < :checkOut
         AND b.checkOut > :checkIn
     """)
@@ -29,9 +30,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
         SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END
         FROM Booking b
         WHERE b.room = :room
+        AND b.status <> com.hotel.booking.entity.enums.BookingStatus.CANCELLED
         AND b.checkIn < :checkOut
         AND b.checkOut > :checkIn
-        AND b.id <> :bookingId
+        AND b.id <> :id
     """)
     boolean existsOverlappingBookingExceptId(
             @Param("room") Room room,

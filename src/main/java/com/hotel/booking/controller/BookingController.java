@@ -35,20 +35,13 @@ public class BookingController {
             @PathVariable Long id,
             @RequestBody Booking booking
     ) {
-        Booking updated = bookingService.updateBooking(id, booking);
-
-        return ResponseEntity.ok(
-                bookingService.convertToDTO(updated)
-        );
+        return ResponseEntity.ok(bookingService.updateBooking(id, booking));
     }
 
     @PostMapping
     public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody Booking booking) {
-        Booking created = bookingService.createBooking(booking);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(bookingService.convertToDTO(created));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(bookingService.createBooking(booking));
     }
 
     @DeleteMapping("/{id}")
@@ -62,11 +55,14 @@ public class BookingController {
             @PathVariable Long id,
             @RequestBody BookingStatusRequest request
     ) {
-        Booking updated = bookingService.updateBookingStatus(id, request.getStatus());
 
-        return ResponseEntity.ok(
-                bookingService.convertToDTO(updated)
-        );
+
+        return ResponseEntity.ok(bookingService.updateBookingStatus(id, request.getStatus()));
+    }
+
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<BookingResponseDTO> cancelBooking(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.cancelBooking(id));
     }
 
 }
