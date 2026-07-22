@@ -5,6 +5,7 @@ import com.hotel.booking.repository.RoomRepository;
 import com.hotel.booking.entity.Room;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,18 +22,9 @@ public class RoomService {
         return roomRepository.findAll();
     }
 
-
     public Room getRoomById(Long id) {
         return roomRepository.findById(id)
-                .orElseThrow();
-    }
-
-    public List<Room> getRoomsByType(RoomType type) {
-        return roomRepository.findByType(type);
-    }
-
-    public List<Room> getRoomsByCapacity(int capacity) {
-        return roomRepository.findByCapacity(capacity);
+                .orElseThrow(() -> new RuntimeException("Room not found"));
     }
 
     public Room updateRoom(Long id, Room updatedRoom) {
@@ -60,5 +52,14 @@ public class RoomService {
 
     public List<Room> getAvailableRooms(LocalDate checkIn, LocalDate checkOut) {
         return roomRepository.findAvailableRooms(checkIn, checkOut);
+    }
+
+    public List<Room> searchRooms(
+            RoomType type,
+            Integer capacity,
+            BigDecimal minPrice,
+            BigDecimal maxPrice
+    ) {
+        return roomRepository.searchRooms(type, capacity, minPrice, maxPrice);
     }
 }
