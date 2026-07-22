@@ -106,6 +106,12 @@ public class BookingService {
         return convertToDTO(savedBooking);
     }
 
+    public List<BookingResponseDTO> getBookingsByUser(Long id) {
+        return bookingRepository.findByUserId(id).stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
     private boolean isValidTransition(BookingStatus current, BookingStatus next) {
         return switch (current) {
             case PENDING -> next == BookingStatus.CONFIRMED ||
