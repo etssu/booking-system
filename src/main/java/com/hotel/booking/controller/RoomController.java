@@ -2,6 +2,8 @@ package com.hotel.booking.controller;
 
 
 
+import com.hotel.booking.dto.RoomResponseDTO;
+import com.hotel.booking.dto.RoomUpdateRequestDTO;
 import com.hotel.booking.entity.Room;
 import com.hotel.booking.entity.enums.RoomType;
 import com.hotel.booking.service.RoomService;
@@ -23,42 +25,41 @@ public class RoomController {
     }
 
     @GetMapping
-    public List<Room> getRooms() {
+    public List<RoomResponseDTO> getRooms() {
         return roomService.getAllRooms();
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Room>> searchRooms(@RequestParam(required = false) RoomType type,
+    public ResponseEntity<List<RoomResponseDTO>> searchRooms(@RequestParam(required = false) RoomType type,
                                                   @RequestParam(required = false) Integer capacity,
                                                   @RequestParam(required = false) BigDecimal minPrice,
                                                   @RequestParam(required = false) BigDecimal maxPrice) {
-        return ResponseEntity.ok(
-                roomService.searchRooms(type, capacity, minPrice, maxPrice)
-        );
+        return ResponseEntity.ok(roomService.searchRooms(type, capacity, minPrice, maxPrice));
     }
 
     @GetMapping("/available")
-    public ResponseEntity<List<Room>> getAvailableRooms(
+    public ResponseEntity<List<RoomResponseDTO>> getAvailableRooms(
             @RequestParam LocalDate checkIn,
             @RequestParam LocalDate checkOut
     ) {
-        return ResponseEntity.ok(
-                roomService.getAvailableRooms(checkIn, checkOut)
-        );
+        return ResponseEntity.ok(roomService.getAvailableRooms(checkIn, checkOut));
     }
 
     @GetMapping("/{id}")
-    public Room getRoom(@PathVariable Long id) {
+    public RoomResponseDTO getRoom(@PathVariable Long id) {
         return roomService.getRoomById(id);
     }
 
     @PutMapping("/{id}")
-    public Room updateRoom(@PathVariable Long id, @RequestBody Room room) {
-        return roomService.updateRoom(id, room);
+    public RoomResponseDTO updateRoom(
+            @PathVariable Long id,
+            @RequestBody RoomUpdateRequestDTO request
+    ) {
+        return roomService.updateRoom(id, request);
     }
 
     @PostMapping
-    public Room createRoom(@RequestBody Room room) {
+    public RoomResponseDTO createRoom(@RequestBody Room room) {
         return roomService.createRoom(room);
     }
 

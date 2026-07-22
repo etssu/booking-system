@@ -1,5 +1,6 @@
 package com.hotel.booking.repository;
 
+import com.hotel.booking.dto.RoomResponseDTO;
 import com.hotel.booking.entity.Room;
 import com.hotel.booking.entity.enums.RoomType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,8 +40,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     AND (:maxPrice IS NULL OR r.price <= :maxPrice)
     """)
     List<Room> searchRooms(@Param("type") RoomType type,
-                           @Param("capacity") Integer capacity,
-                           @Param("minPrice") BigDecimal minPrice,
-                           @Param("maxPrice") BigDecimal maxPrice);
+                                      @Param("capacity") Integer capacity,
+                                      @Param("minPrice") BigDecimal minPrice,
+                                      @Param("maxPrice") BigDecimal maxPrice);
 
 }
