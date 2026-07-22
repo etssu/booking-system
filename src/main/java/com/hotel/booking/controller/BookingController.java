@@ -1,6 +1,8 @@
 package com.hotel.booking.controller;
 
 
+import com.hotel.booking.dto.BookingResponseDTO;
+import com.hotel.booking.dto.BookingStatusRequest;
 import com.hotel.booking.entity.Booking;
 import com.hotel.booking.service.BookingService;
 import org.springframework.http.HttpStatus;
@@ -19,25 +21,27 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<Booking> getBookings() { return bookingService.getAllBookings(); }
+    public ResponseEntity<List<BookingResponseDTO>> getAllBookings() {
+        return ResponseEntity.ok(bookingService.getAllBookings());
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBooking(@PathVariable Long id) {
+    public ResponseEntity<BookingResponseDTO> getBooking(@PathVariable Long id) {
         return ResponseEntity.ok(bookingService.getBookingById(id));
     }
 
     @PutMapping("/{id}")
-    public Booking updateBooking(
+    public ResponseEntity<BookingResponseDTO> updateBooking(
             @PathVariable Long id,
             @RequestBody Booking booking
     ) {
-        return bookingService.updateBooking(id, booking);
+        return ResponseEntity.ok(bookingService.updateBooking(id, booking));
     }
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        Booking created = bookingService.createBooking(booking);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody Booking booking) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(bookingService.createBooking(booking));
     }
 
     @DeleteMapping("/{id}")
@@ -45,4 +49,20 @@ public class BookingController {
         bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<BookingResponseDTO> updateStatus(
+            @PathVariable Long id,
+            @RequestBody BookingStatusRequest request
+    ) {
+
+
+        return ResponseEntity.ok(bookingService.updateBookingStatus(id, request.getStatus()));
+    }
+
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<BookingResponseDTO> cancelBooking(@PathVariable Long id) {
+        return ResponseEntity.ok(bookingService.cancelBooking(id));
+    }
+
 }

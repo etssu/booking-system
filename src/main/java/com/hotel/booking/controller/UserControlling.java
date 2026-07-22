@@ -1,10 +1,12 @@
 package com.hotel.booking.controller;
 
+import com.hotel.booking.dto.BookingResponseDTO;
 import com.hotel.booking.entity.User;
 import com.hotel.booking.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.hotel.booking.service.BookingService;
 
 import java.util.List;
 
@@ -12,9 +14,11 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserControlling {
     private final UserService userService;
+    private final BookingService bookingService;
 
-    public UserControlling(UserService userService) {
+    public UserControlling(UserService userService, BookingService bookingService) {
         this.userService = userService;
+        this.bookingService = bookingService;
     }
 
     @GetMapping
@@ -42,5 +46,14 @@ public class UserControlling {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/bookings")
+    public ResponseEntity<List<BookingResponseDTO>> getUserBookings(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(
+                bookingService.getBookingsByUser(id)
+        );
     }
 }
