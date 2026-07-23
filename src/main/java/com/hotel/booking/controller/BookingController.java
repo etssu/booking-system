@@ -12,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
@@ -24,12 +22,8 @@ public class BookingController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<BookingResponseDTO>> getAllBookings(
-            Pageable pageable
-    ) {
-        return ResponseEntity.ok(
-                bookingService.getAllBookings(pageable)
-        );
+    public ResponseEntity<Page<BookingResponseDTO>> getAllBookings(Pageable pageable) {
+        return ResponseEntity.ok(bookingService.getAllBookings(pageable));
     }
 
     @GetMapping("/{id}")
@@ -38,17 +32,13 @@ public class BookingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookingResponseDTO> updateBooking(
-            @PathVariable Long id,
-            @RequestBody BookingUpdateRequestDTO request
-    ) {
+    public ResponseEntity<BookingResponseDTO> updateBooking(@PathVariable Long id,
+            @RequestBody BookingUpdateRequestDTO request) {
         return ResponseEntity.ok(bookingService.updateBooking(id, request));
     }
 
     @PostMapping
-    public ResponseEntity<BookingResponseDTO> createBooking(
-            @RequestBody BookingCreateRequestDTO request
-    ) {
+    public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody BookingCreateRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(bookingService.createBooking(request));
     }

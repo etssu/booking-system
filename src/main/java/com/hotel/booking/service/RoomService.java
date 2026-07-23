@@ -4,6 +4,7 @@ import com.hotel.booking.dto.RoomCreateRequestDTO;
 import com.hotel.booking.dto.RoomResponseDTO;
 import com.hotel.booking.dto.RoomUpdateRequestDTO;
 import com.hotel.booking.entity.enums.RoomType;
+import com.hotel.booking.exception.RoomNotFoundException;
 import com.hotel.booking.repository.RoomRepository;
 import com.hotel.booking.entity.Room;
 import org.springframework.stereotype.Service;
@@ -22,20 +23,16 @@ public class RoomService {
         this.roomRepository = roomRepository;
     }
 
-    public List<RoomResponseDTO> getAllRooms() {
-        return roomRepository.findAll().stream().map(this::convertToDTO).toList();
-    }
-
     public RoomResponseDTO getRoomById(Long id) {
         Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(RoomNotFoundException::new);
 
         return convertToDTO(room);
     }
 
     public RoomResponseDTO updateRoom(Long id, RoomUpdateRequestDTO request) {
         Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(RoomNotFoundException::new);
 
         if (request.getType() != null) {
             room.setType(request.getType());
@@ -50,12 +47,8 @@ public class RoomService {
         }
 
         if (request.getRoomNumber() != null) {
-
-            if (roomRepository.existsByRoomNumberAndIdNot(
-                    request.getRoomNumber(),
-                    id
-            )) {
-                throw new IllegalArgumentException("Room number already exists");
+            if (roomRepository.existsByRoomNumberAndIdNot(request.getRoomNumber(), id)) {
+                throw new IllegalArgumentException("Room number already exists.");
             }
 
             room.setRoomNumber(request.getRoomNumber());
@@ -66,7 +59,7 @@ public class RoomService {
 
     public RoomResponseDTO createRoom(RoomCreateRequestDTO request) {
         if (roomRepository.existsByRoomNumber(request.getRoomNumber())) {
-            throw new IllegalArgumentException("Room number already exists");
+            throw new IllegalArgumentException("Room number already exists.");
         }
         Room room = new Room();
 
@@ -80,7 +73,7 @@ public class RoomService {
 
     public void deleteRoom(Long id) {
         Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(RoomNotFoundException::new);
 
         roomRepository.delete(room);
     }

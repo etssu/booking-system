@@ -5,6 +5,9 @@ import com.hotel.booking.dto.UserResponseDTO;
 import com.hotel.booking.dto.UserUpdateRequestDTO;
 import com.hotel.booking.entity.User;
 import com.hotel.booking.entity.enums.Role;
+import com.hotel.booking.exception.EmailAlreadyExistsException;
+import com.hotel.booking.exception.UserNotFoundException;
+import com.hotel.booking.exception.UsernameAlreadyExistsException;
 import com.hotel.booking.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,28 +27,18 @@ public class UserService {
     }
 
     public UserResponseDTO getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-
-        return convertToDTO(user);
-    }
-
-    public UserResponseDTO getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email);
-
-        if (user == null) {
-            throw new RuntimeException("User not found.");
-        }
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         return convertToDTO(user);
     }
 
     public UserResponseDTO createUser(UserCreateRequestDTO request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException("Username already exists.");
+            throw new UsernameAlreadyExistsException();
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists.");
+            throw new EmailAlreadyExistsException();
         }
 
         User user = new User();
@@ -62,12 +55,12 @@ public class UserService {
 
     public UserResponseDTO updateUser(Long id, UserUpdateRequestDTO request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         if (request.getUsername() != null) {
 
             if (userRepository.existsByUsernameAndIdNot(request.getUsername(), id)) {
-                throw new IllegalArgumentException("Username already exists");
+                throw new UsernameAlreadyExistsException();
             }
 
             user.setUsername(request.getUsername());
@@ -78,7 +71,7 @@ public class UserService {
         if (request.getEmail() != null) {
 
             if (userRepository.existsByEmailAndIdNot(request.getEmail(), id)) {
-                throw new IllegalArgumentException("Email already exists");
+                throw new EmailAlreadyExistsException();
             }
 
             user.setEmail(request.getEmail());
@@ -95,7 +88,7 @@ public class UserService {
 
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         userRepository.delete(user);
     }

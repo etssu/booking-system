@@ -5,6 +5,9 @@ import com.hotel.booking.dto.BookingResponseDTO;
 import com.hotel.booking.dto.BookingUpdateRequestDTO;
 import com.hotel.booking.entity.*;
 import com.hotel.booking.entity.enums.BookingStatus;
+import com.hotel.booking.exception.BookingNotFoundException;
+import com.hotel.booking.exception.RoomNotFoundException;
+import com.hotel.booking.exception.UserNotFoundException;
 import com.hotel.booking.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +35,6 @@ public class BookingService {
     }
 
     public BookingResponseDTO createBooking(BookingCreateRequestDTO request) {
-
         Booking booking = new Booking();
 
         booking.setCheckIn(request.getCheckIn());
@@ -40,10 +42,10 @@ public class BookingService {
         booking.setNumberOfGuests(request.getNumberOfGuests());
 
         Room room = roomRepository.findById(request.getRoomId())
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(RoomNotFoundException::new);
 
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         booking.setRoom(room);
         booking.setUser(user);
@@ -66,14 +68,14 @@ public class BookingService {
 
     public BookingResponseDTO getBookingById(Long id) {
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(BookingNotFoundException::new);
 
         return convertToDTO(booking);
     }
 
     public BookingResponseDTO updateBooking(Long id, BookingUpdateRequestDTO updatedBooking) {
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(BookingNotFoundException::new);
 
         booking.setCheckIn(updatedBooking.getCheckIn());
         booking.setCheckOut(updatedBooking.getCheckOut());
@@ -81,14 +83,14 @@ public class BookingService {
 
         if (updatedBooking.getRoomId() != null) {
             Room room = roomRepository.findById(updatedBooking.getRoomId())
-                    .orElseThrow(() -> new RuntimeException("Room not found"));
+                    .orElseThrow(RoomNotFoundException::new);
 
             booking.setRoom(room);
         }
 
         if (updatedBooking.getUserId() != null) {
             User user = userRepository.findById(updatedBooking.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(UserNotFoundException::new);
 
             booking.setUser(user);
         }
@@ -114,18 +116,16 @@ public class BookingService {
 
     public void deleteBooking(Long id) {
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(BookingNotFoundException::new);
 
         bookingRepository.delete(booking);
     }
 
     public BookingResponseDTO updateBookingStatus(Long id, BookingStatus status) {
-        Booking booking = bookingRepository.findById(id).orElseThrow(() -> new RuntimeException("Booking not found"));
+        Booking booking = bookingRepository.findById(id).orElseThrow(BookingNotFoundException::new);
 
         if (!isValidTransition(booking.getStatus(), status)) {
-            throw new IllegalArgumentException(
-                    "Invalid booking status transition"
-            );
+            throw new IllegalArgumentException("Invalid booking status transition");
         }
 
         booking.setStatus(status);
@@ -175,25 +175,23 @@ public class BookingService {
 
     private void validateBookingDates(Booking booking) {
         if (booking.getCheckIn().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("You cannot book a date before today");
+            throw new IllegalArgumentException("You cannot book a date before today.");
         }
 
         if (!booking.getCheckOut().isAfter(booking.getCheckIn())) {
-            throw new IllegalArgumentException("Check-out date must be after check-in date");
+            throw new IllegalArgumentException("Check-out date must be after check-in date.");
         }
     }
 
     private void validateRoomAvailability(boolean exists) {
         if (exists) {
-            throw new IllegalArgumentException("Room is already booked for these dates");
+            throw new IllegalArgumentException("Room is already booked for these dates.");
         }
     }
 
     private void validateGuestCount(Booking booking) {
         if (booking.getNumberOfGuests() > booking.getRoom().getCapacity()) {
-            throw new IllegalArgumentException(
-                    "Number of guests exceeds room capacity."
-            );
+            throw new IllegalArgumentException("Number of guests exceeds room capacity.");
         }
     }
 }

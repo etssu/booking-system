@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -68,10 +67,8 @@ public class RoomController {
     }
 
     @PutMapping("/{id}")
-    public RoomResponseDTO updateRoom(
-            @PathVariable Long id,
-            @RequestBody RoomUpdateRequestDTO request
-    ) {
+    public RoomResponseDTO updateRoom(@PathVariable Long id,
+            @RequestBody RoomUpdateRequestDTO request) {
         return roomService.updateRoom(id, request);
     }
 
