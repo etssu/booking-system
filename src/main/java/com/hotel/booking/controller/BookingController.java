@@ -1,9 +1,10 @@
 package com.hotel.booking.controller;
 
 
+import com.hotel.booking.dto.BookingCreateRequestDTO;
 import com.hotel.booking.dto.BookingResponseDTO;
 import com.hotel.booking.dto.BookingStatusRequest;
-import com.hotel.booking.entity.Booking;
+import com.hotel.booking.dto.BookingUpdateRequestDTO;
 import com.hotel.booking.service.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,15 +34,17 @@ public class BookingController {
     @PutMapping("/{id}")
     public ResponseEntity<BookingResponseDTO> updateBooking(
             @PathVariable Long id,
-            @RequestBody Booking booking
+            @RequestBody BookingUpdateRequestDTO request
     ) {
-        return ResponseEntity.ok(bookingService.updateBooking(id, booking));
+        return ResponseEntity.ok(bookingService.updateBooking(id, request));
     }
 
     @PostMapping
-    public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody Booking booking) {
+    public ResponseEntity<BookingResponseDTO> createBooking(
+            @RequestBody BookingCreateRequestDTO request
+    ) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(bookingService.createBooking(booking));
+                .body(bookingService.createBooking(request));
     }
 
     @DeleteMapping("/{id}")

@@ -1,6 +1,8 @@
 package com.hotel.booking.service;
 
+import com.hotel.booking.dto.BookingCreateRequestDTO;
 import com.hotel.booking.dto.BookingResponseDTO;
+import com.hotel.booking.dto.BookingUpdateRequestDTO;
 import com.hotel.booking.entity.*;
 import com.hotel.booking.entity.enums.BookingStatus;
 import com.hotel.booking.repository.*;
@@ -29,16 +31,35 @@ public class BookingService {
                 .toList();
     }
 
-    public BookingResponseDTO createBooking(Booking booking) {
-        validateAndSetReferences(booking);
+    public BookingResponseDTO createBooking(BookingCreateRequestDTO request) {
+
+        Booking booking = new Booking();
+
+        booking.setCheckIn(request.getCheckIn());
+        booking.setCheckOut(request.getCheckOut());
+        booking.setNumberOfGuests(request.getNumberOfGuests());
+
+        Room room = roomRepository.findById(request.getRoomId())
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        booking.setRoom(room);
+        booking.setUser(user);
+
         validateBookingDates(booking);
 
-        validateRoomAvailability(bookingRepository.existsOverlappingBooking(
-                booking.getRoom(),
-                booking.getCheckIn(),
-                booking.getCheckOut()));
+        validateRoomAvailability(
+                bookingRepository.existsOverlappingBooking(
+                        booking.getRoom(),
+                        booking.getCheckIn(),
+                        booking.getCheckOut()
+                )
+        );
 
         booking.setStatus(BookingStatus.PENDING);
+
         return convertToDTO(bookingRepository.save(booking));
     }
 
@@ -49,7 +70,7 @@ public class BookingService {
         return convertToDTO(booking);
     }
 
-    public BookingResponseDTO updateBooking(Long id, Booking updatedBooking) {
+    public BookingResponseDTO updateBooking(Long id, BookingUpdateRequestDTO updatedBooking) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
@@ -57,15 +78,20 @@ public class BookingService {
         booking.setCheckOut(updatedBooking.getCheckOut());
         booking.setNumberOfGuests(updatedBooking.getNumberOfGuests());
 
-        if (updatedBooking.getRoom() != null) {
-            booking.setRoom(updatedBooking.getRoom());
+        if (updatedBooking.getRoomId() != null) {
+            Room room = roomRepository.findById(updatedBooking.getRoomId())
+                    .orElseThrow(() -> new RuntimeException("Room not found"));
+
+            booking.setRoom(room);
         }
 
-        if (updatedBooking.getUser() != null) {
-            booking.setUser(updatedBooking.getUser());
+        if (updatedBooking.getUserId() != null) {
+            User user = userRepository.findById(updatedBooking.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            booking.setUser(user);
         }
 
-        validateAndSetReferences(booking);
         validateBookingDates(booking);
 
         validateRoomAvailability(
@@ -153,25 +179,6 @@ public class BookingService {
         if (!booking.getCheckOut().isAfter(booking.getCheckIn())) {
             throw new IllegalArgumentException("Check-out date must be after check-in date");
         }
-    }
-
-    private void validateAndSetReferences(Booking booking) {
-        if (booking.getRoom() == null) {
-            throw new IllegalArgumentException("Room is required");
-        }
-
-        if (booking.getUser() == null) {
-            throw new IllegalArgumentException("User is required");
-        }
-
-        Room room = roomRepository.findById(booking.getRoom().getId())
-                .orElseThrow(() -> new RuntimeException("Room not found"));
-
-        User user = userRepository.findById(booking.getUser().getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        booking.setRoom(room);
-        booking.setUser(user);
     }
 
     private void validateRoomAvailability(boolean exists) {
