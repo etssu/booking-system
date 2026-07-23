@@ -1,14 +1,24 @@
 package com.hotel.booking.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+
 import java.time.LocalDate;
 
 public class BookingCreateRequestDTO {
-
+    @NotNull(message = "Check-in date is required.")
     private LocalDate checkIn;
+
+    @NotNull(message = "Check-out date is required.")
     private LocalDate checkOut;
+
+    @NotNull(message = "Number of guests is required.")
+    @Min(value = 1, message = "Number of guests must be at least 1.")
     private Integer numberOfGuests;
 
+    @NotNull(message = "Room id is required.")
     private Long userId;
+    @NotNull(message = "Room id is required.")
     private Long roomId;
 
     public LocalDate getCheckIn() {

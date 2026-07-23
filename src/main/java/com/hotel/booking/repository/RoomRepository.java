@@ -15,6 +15,9 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
+    boolean existsByRoomNumber(Integer roomNumber);
+    boolean existsByRoomNumberAndIdNot(Integer roomNumber, Long id);
+
     @Query("""
     SELECT r
     FROM Room r

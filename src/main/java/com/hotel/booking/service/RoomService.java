@@ -1,5 +1,6 @@
 package com.hotel.booking.service;
 
+import com.hotel.booking.dto.RoomCreateRequestDTO;
 import com.hotel.booking.dto.RoomResponseDTO;
 import com.hotel.booking.dto.RoomUpdateRequestDTO;
 import com.hotel.booking.entity.enums.RoomType;
@@ -47,13 +48,31 @@ public class RoomService {
         }
 
         if (request.getRoomNumber() != null) {
+
+            if (roomRepository.existsByRoomNumberAndIdNot(
+                    request.getRoomNumber(),
+                    id
+            )) {
+                throw new IllegalArgumentException("Room number already exists");
+            }
+
             room.setRoomNumber(request.getRoomNumber());
         }
 
         return convertToDTO(roomRepository.save(room));
     }
 
-    public RoomResponseDTO createRoom(Room room) {
+    public RoomResponseDTO createRoom(RoomCreateRequestDTO request) {
+        if (roomRepository.existsByRoomNumber(request.getRoomNumber())) {
+            throw new IllegalArgumentException("Room number already exists");
+        }
+        Room room = new Room();
+
+        room.setRoomNumber(request.getRoomNumber());
+        room.setPrice(request.getPrice());
+        room.setType(request.getType());
+        room.setCapacity(request.getCapacity());
+
         return convertToDTO(roomRepository.save(room));
     }
 

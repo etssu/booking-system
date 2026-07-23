@@ -33,13 +33,21 @@ public class UserService {
         User user = userRepository.findByEmail(email);
 
         if (user == null) {
-            throw new RuntimeException("User not found");
+            throw new RuntimeException("User not found.");
         }
 
         return convertToDTO(user);
     }
 
     public UserResponseDTO createUser(UserCreateRequestDTO request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new IllegalArgumentException("Username already exists.");
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email already exists.");
+        }
+
         User user = new User();
 
         user.setFirstName(request.getFirstName());
@@ -57,12 +65,22 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (request.getUsername() != null) {
+
+            if (userRepository.existsByUsernameAndIdNot(request.getUsername(), id)) {
+                throw new IllegalArgumentException("Username already exists");
+            }
+
             user.setUsername(request.getUsername());
         }
         if (request.getPassword() != null) {
             user.setPassword(request.getPassword());
         }
         if (request.getEmail() != null) {
+
+            if (userRepository.existsByEmailAndIdNot(request.getEmail(), id)) {
+                throw new IllegalArgumentException("Email already exists");
+            }
+
             user.setEmail(request.getEmail());
         }
         if (request.getFirstName() != null) {

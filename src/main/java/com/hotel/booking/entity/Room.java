@@ -13,6 +13,7 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private Integer roomNumber;
     private BigDecimal price;
 
@@ -20,10 +21,6 @@ public class Room {
     private RoomType type;
 
     private int capacity;
-
-    @OneToMany(mappedBy = "room")
-    private List<Booking> bookings;
-
 
     public Long getId() {
         return id;

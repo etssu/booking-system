@@ -49,6 +49,7 @@ public class BookingService {
         booking.setUser(user);
 
         validateBookingDates(booking);
+        validateGuestCount(booking);
 
         validateRoomAvailability(
                 bookingRepository.existsOverlappingBooking(
@@ -93,6 +94,7 @@ public class BookingService {
         }
 
         validateBookingDates(booking);
+        validateGuestCount(booking);
 
         validateRoomAvailability(
                 bookingRepository.existsOverlappingBookingExceptId(
@@ -184,6 +186,14 @@ public class BookingService {
     private void validateRoomAvailability(boolean exists) {
         if (exists) {
             throw new IllegalArgumentException("Room is already booked for these dates");
+        }
+    }
+
+    private void validateGuestCount(Booking booking) {
+        if (booking.getNumberOfGuests() > booking.getRoom().getCapacity()) {
+            throw new IllegalArgumentException(
+                    "Number of guests exceeds room capacity."
+            );
         }
     }
 }

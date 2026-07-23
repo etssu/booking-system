@@ -1,11 +1,15 @@
 package com.hotel.booking.dto;
 
+import jakarta.validation.constraints.Min;
+
 import java.time.LocalDate;
 
 public class BookingUpdateRequestDTO {
 
     private LocalDate checkIn;
     private LocalDate checkOut;
+
+    @Min(value = 1, message = "Number of guests must be at least 1.")
     private Integer numberOfGuests;
 
     private Long userId;

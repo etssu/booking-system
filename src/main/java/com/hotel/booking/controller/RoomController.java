@@ -2,11 +2,14 @@ package com.hotel.booking.controller;
 
 
 
+import com.hotel.booking.dto.RoomCreateRequestDTO;
 import com.hotel.booking.dto.RoomResponseDTO;
 import com.hotel.booking.dto.RoomUpdateRequestDTO;
 import com.hotel.booking.entity.Room;
 import com.hotel.booking.entity.enums.RoomType;
 import com.hotel.booking.service.RoomService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,8 +62,11 @@ public class RoomController {
     }
 
     @PostMapping
-    public RoomResponseDTO createRoom(@RequestBody Room room) {
-        return roomService.createRoom(room);
+    public ResponseEntity<RoomResponseDTO> createRoom(
+            @RequestBody @Valid RoomCreateRequestDTO request
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(roomService.createRoom(request));
     }
 
     @DeleteMapping("/{id}")

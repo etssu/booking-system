@@ -3,20 +3,27 @@ package com.hotel.booking.dto;
 import com.hotel.booking.entity.enums.RoomType;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-public class RoomUpdateRequestDTO {
-    @Min(value = 1, message = "Room number must be positive")
+public class RoomCreateRequestDTO {
+
+    @NotNull(message = "Room number is required.")
+    @Min(value = 1, message = "Room number must be positive.")
     private Integer roomNumber;
 
-    @DecimalMin(value = "0.01", message = "Price must be greater than 0")
+    @NotNull(message = "Price is required.")
+    @DecimalMin(value = "0.01", message = "Price must be greater than 0.")
     private BigDecimal price;
 
+    @NotNull(message = "Room type is required.")
     private RoomType type;
 
-    @Min(value = 1, message = "Capacity must be at least 1")
+    @NotNull(message = "Capacity is required.")
+    @Min(value = 1, message = "Capacity must be at least 1.")
     private Integer capacity;
+
 
     public Integer getRoomNumber() {
         return roomNumber;
