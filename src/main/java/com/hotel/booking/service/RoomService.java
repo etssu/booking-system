@@ -7,6 +7,8 @@ import com.hotel.booking.entity.enums.RoomType;
 import com.hotel.booking.repository.RoomRepository;
 import com.hotel.booking.entity.Room;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -83,19 +85,32 @@ public class RoomService {
         roomRepository.delete(room);
     }
 
-    public List<RoomResponseDTO> getAvailableRooms(LocalDate checkIn, LocalDate checkOut) {
-        return roomRepository.findAvailableRooms(checkIn, checkOut).stream()
-                .map(this::convertToDTO).toList();
+    public Page<RoomResponseDTO> getAvailableRooms(
+            LocalDate checkIn,
+            LocalDate checkOut,
+            Pageable pageable
+    ) {
+        return roomRepository.findAvailableRooms(
+                checkIn,
+                checkOut,
+                pageable
+        ).map(this::convertToDTO);
     }
 
-    public List<RoomResponseDTO> searchRooms(
+    public Page<RoomResponseDTO> searchRooms(
             RoomType type,
             Integer capacity,
             BigDecimal minPrice,
-            BigDecimal maxPrice
+            BigDecimal maxPrice,
+            Pageable pageable
     ) {
-        return roomRepository.searchRooms(type, capacity, minPrice, maxPrice).stream()
-                .map(this::convertToDTO).toList();
+        return roomRepository.searchRooms(
+                type,
+                capacity,
+                minPrice,
+                maxPrice,
+                pageable
+        ).map(this::convertToDTO);
     }
 
     private RoomResponseDTO convertToDTO(Room room) {
@@ -106,5 +121,10 @@ public class RoomService {
                 room.getType(),
                 room.getCapacity()
         );
+    }
+
+    public Page<RoomResponseDTO> getAllRooms(Pageable pageable) {
+        return roomRepository.findAll(pageable)
+                .map(this::convertToDTO);
     }
 }

@@ -1,14 +1,15 @@
 package com.hotel.booking.controller;
 
-
-
 import com.hotel.booking.dto.RoomCreateRequestDTO;
 import com.hotel.booking.dto.RoomResponseDTO;
 import com.hotel.booking.dto.RoomUpdateRequestDTO;
-import com.hotel.booking.entity.Room;
 import com.hotel.booking.entity.enums.RoomType;
 import com.hotel.booking.service.RoomService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,24 +29,37 @@ public class RoomController {
     }
 
     @GetMapping
-    public List<RoomResponseDTO> getRooms() {
-        return roomService.getAllRooms();
+    public ResponseEntity<Page<RoomResponseDTO>> getRooms(
+            @PageableDefault(
+                    sort = "roomNumber",
+                    direction = Sort.Direction.ASC
+            )
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                roomService.getAllRooms(pageable)
+        );
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<RoomResponseDTO>> searchRooms(@RequestParam(required = false) RoomType type,
-                                                  @RequestParam(required = false) Integer capacity,
-                                                  @RequestParam(required = false) BigDecimal minPrice,
-                                                  @RequestParam(required = false) BigDecimal maxPrice) {
-        return ResponseEntity.ok(roomService.searchRooms(type, capacity, minPrice, maxPrice));
+    public ResponseEntity<Page<RoomResponseDTO>> searchRooms(
+            @RequestParam(required = false) RoomType type,
+            @RequestParam(required = false) Integer capacity,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                roomService.searchRooms(type, capacity, minPrice, maxPrice, pageable));
     }
 
     @GetMapping("/available")
-    public ResponseEntity<List<RoomResponseDTO>> getAvailableRooms(
+    public ResponseEntity<Page<RoomResponseDTO>> getAvailableRooms(
             @RequestParam LocalDate checkIn,
-            @RequestParam LocalDate checkOut
+            @RequestParam LocalDate checkOut,
+            Pageable pageable
     ) {
-        return ResponseEntity.ok(roomService.getAvailableRooms(checkIn, checkOut));
+        return ResponseEntity.ok(roomService.getAvailableRooms(checkIn, checkOut, pageable));
     }
 
     @GetMapping("/{id}")

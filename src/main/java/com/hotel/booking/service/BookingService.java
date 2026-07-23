@@ -6,6 +6,8 @@ import com.hotel.booking.dto.BookingUpdateRequestDTO;
 import com.hotel.booking.entity.*;
 import com.hotel.booking.entity.enums.BookingStatus;
 import com.hotel.booking.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,11 +26,9 @@ public class BookingService {
         this.userRepository = userRepository;
     }
 
-    public List<BookingResponseDTO> getAllBookings() {
-        return bookingRepository.findAll()
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
+    public Page<BookingResponseDTO> getAllBookings(Pageable pageable) {
+        return bookingRepository.findAll(pageable)
+                .map(this::convertToDTO);
     }
 
     public BookingResponseDTO createBooking(BookingCreateRequestDTO request) {

@@ -1,8 +1,9 @@
 package com.hotel.booking.repository;
 
-import com.hotel.booking.dto.RoomResponseDTO;
 import com.hotel.booking.entity.Room;
 import com.hotel.booking.entity.enums.RoomType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,9 +31,10 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
         AND b.checkOut > :checkIn
     )
 """)
-    List<Room> findAvailableRooms(
+    Page<Room> findAvailableRooms(
             @Param("checkIn") LocalDate checkIn,
-            @Param("checkOut") LocalDate checkOut
+            @Param("checkOut") LocalDate checkOut,
+            Pageable pageable
     );
 
     @Query("""
@@ -42,9 +44,13 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     AND (:minPrice IS NULL OR r.price >= :minPrice)
     AND (:maxPrice IS NULL OR r.price <= :maxPrice)
     """)
-    List<Room> searchRooms(@Param("type") RoomType type,
-                                      @Param("capacity") Integer capacity,
-                                      @Param("minPrice") BigDecimal minPrice,
-                                      @Param("maxPrice") BigDecimal maxPrice);
+    Page<Room> searchRooms(
+            @Param("type") RoomType type,
+            @Param("capacity") Integer capacity,
+            @Param("minPrice") BigDecimal minPrice,
+            @Param("maxPrice") BigDecimal maxPrice,
+            Pageable pageable
+    );
+
 
 }
