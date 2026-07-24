@@ -1,6 +1,5 @@
 package com.hotel.booking.controller;
 
-
 import com.hotel.booking.dto.BookingCreateRequestDTO;
 import com.hotel.booking.dto.BookingResponseDTO;
 import com.hotel.booking.dto.BookingStatusRequest;
