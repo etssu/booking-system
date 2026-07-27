@@ -58,7 +58,7 @@ public class UserServiceTest {
         assertThat(result.get(0).getEmail()).isEqualTo("john@mail.com");
     }
 
-    // get user by Id
+    // get user by ID
     @Test
     void getUserById_shouldReturnDto_whenUserExists() {
         when(userRepository.findById(existingUser.getId())).thenReturn(Optional.of(existingUser));
@@ -162,7 +162,7 @@ public class UserServiceTest {
         assertThrows(UserNotFoundException.class,
                 () -> userService.deleteUser(99L));
 
-        verify(userRepository, never()).delete(any());
+        verify(userRepository, never()).delete(any(User.class));
     }
 
 }
