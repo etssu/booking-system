@@ -1,14 +1,23 @@
 package com.hotel.booking.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Min;
 
 import java.time.LocalDate;
 
 public class BookingCreateRequestDTO {
+    @Schema(
+            description = "Check-in date",
+            example = "2026-08-10"
+    )
     @NotNull(message = "Check-in date is required.")
     private LocalDate checkIn;
 
+    @Schema(
+            description = "Check-out date",
+            example = "2026-08-15"
+    )
     @NotNull(message = "Check-out date is required.")
     private LocalDate checkOut;
 

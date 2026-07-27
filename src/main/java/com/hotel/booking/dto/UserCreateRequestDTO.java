@@ -23,6 +23,7 @@ public class UserCreateRequestDTO {
     @Size(min = 6, message = "Password must contain at least 6 characters.")
     private String password;
 
+
     public String getFirstName() {
         return firstName;
     }

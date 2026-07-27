@@ -1,6 +1,7 @@
 package com.hotel.booking.dto;
 
 import com.hotel.booking.entity.enums.RoomType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +18,10 @@ public class RoomCreateRequestDTO {
     @DecimalMin(value = "0.01", message = "Price must be greater than 0.")
     private BigDecimal price;
 
+    @Schema(
+            description = "Room type",
+            example = "STANDARD"
+    )
     @NotNull(message = "Room type is required.")
     private RoomType type;
 
