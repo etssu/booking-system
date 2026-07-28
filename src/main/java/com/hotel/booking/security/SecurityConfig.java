@@ -21,6 +21,10 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
                         .permitAll()
 
+                        // users
+                        .requestMatchers(HttpMethod.POST, "/api/users/**")
+                        .permitAll()
+
                         // rooms
                         .requestMatchers(HttpMethod.GET, "/api/rooms/**")
                         .hasAnyRole("GUEST", "ADMIN")
