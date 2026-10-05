@@ -16,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
@@ -30,6 +31,9 @@ import static org.mockito.Mockito.*;
 public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private UserService userService;
 
@@ -91,15 +95,18 @@ public class UserServiceTest {
         when(userRepository.existsByUsername("janesmith")).thenReturn(false);
         when(userRepository.existsByEmail("jane@mail.com")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(passwordEncoder.encode("passw123")).thenReturn("encodedPassword");
 
         UserResponseDTO result = userService.createUser(request);
 
         assertThat(result.getUsername()).isEqualTo("janesmith");
         assertThat(result.getEmail()).isEqualTo("jane@mail.com");
 
+
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(captor.capture());
         assertThat(captor.getValue().getRole()).isEqualTo(Role.GUEST);
+        assertThat(captor.getValue().getPassword()).isEqualTo("encodedPassword");
     }
 
     // update user
@@ -107,17 +114,22 @@ public class UserServiceTest {
     void updateUser_shouldUpdateOnlyProvidedFields() {
         UserUpdateRequestDTO request = new UserUpdateRequestDTO();
         request.setEmail("newemail@mail.com");
+        request.setPassword("passw123");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
         when(userRepository.existsByEmailAndIdNot("newemail@mail.com", 1L)).thenReturn(false);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(passwordEncoder.encode("passw123")).thenReturn("encodedPassword");
 
         UserResponseDTO result = userService.updateUser(1L, request);
 
         assertThat(result.getEmail()).isEqualTo("newemail@mail.com");
         // username shouldnt change
         assertThat(result.getUsername()).isEqualTo("johndoe");
+        assertThat(existingUser.getPassword()).isEqualTo("encodedPassword");
+
         verify(userRepository, never()).existsByUsernameAndIdNot(anyString(), anyLong());
+        verify(passwordEncoder).encode("passw123");
     }
 
     @Test

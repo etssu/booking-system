@@ -79,7 +79,7 @@ public class RoomServiceTest {
 
     @Test
     void getRoomById_shouldThrowException_whenRoomNotFound() {
-        when(roomRepository.findById(existingRoom.getId())).thenReturn(Optional.empty());
+        when(roomRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(RoomNotFoundException.class, () -> roomService.getRoomById(99L));
     }
