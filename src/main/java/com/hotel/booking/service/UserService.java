@@ -69,7 +69,7 @@ public class UserService {
             user.setUsername(request.getUsername());
         }
         if (request.getPassword() != null) {
-            user.setPassword(request.getPassword());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
         if (request.getEmail() != null) {
 
