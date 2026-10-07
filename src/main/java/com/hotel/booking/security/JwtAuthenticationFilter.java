@@ -39,8 +39,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring(7);
 
+        String token = authHeader.substring(7);
+    try {
         String username = jwtService.extractUsername(token);
 
         UserDetails userDetails =
@@ -57,8 +58,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext()
                     .setAuthentication(authentication);
-        }
 
+        }
+    } catch (Exception e) {
+        SecurityContextHolder.clearContext();
+    }
         filterChain.doFilter(request, response);
     }
 }
