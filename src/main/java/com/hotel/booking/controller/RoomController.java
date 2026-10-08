@@ -68,7 +68,7 @@ public class RoomController {
 
     @PutMapping("/{id}")
     public RoomResponseDTO updateRoom(@PathVariable Long id,
-            @RequestBody RoomUpdateRequestDTO request) {
+            @Valid @RequestBody RoomUpdateRequestDTO request) {
         return roomService.updateRoom(id, request);
     }
 

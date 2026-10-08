@@ -3,8 +3,6 @@ package com.hotel.booking.entity;
 import com.hotel.booking.entity.enums.Role;
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "users")
 public class User {

@@ -76,7 +76,6 @@ public class BookingService {
     public BookingResponseDTO updateBooking(Long id, BookingUpdateRequestDTO updatedBooking) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(BookingNotFoundException::new);
-
         booking.setCheckIn(updatedBooking.getCheckIn());
         booking.setCheckOut(updatedBooking.getCheckOut());
         booking.setNumberOfGuests(updatedBooking.getNumberOfGuests());
@@ -190,6 +189,9 @@ public class BookingService {
     }
 
     private void validateGuestCount(Booking booking) {
+        if (booking.getNumberOfGuests() == null ||  booking.getNumberOfGuests() <= 0) {
+            throw new IllegalArgumentException("Number of guests must be greater than zero.");
+        }
         if (booking.getNumberOfGuests() > booking.getRoom().getCapacity()) {
             throw new IllegalArgumentException("Number of guests exceeds room capacity.");
         }

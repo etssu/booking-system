@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class RoomService {
@@ -83,6 +82,9 @@ public class RoomService {
             LocalDate checkOut,
             Pageable pageable
     ) {
+        if (!checkOut.isAfter(checkIn)) {
+            throw new IllegalArgumentException("Check-out date must be after check-in date.");
+        }
         return roomRepository.findAvailableRooms(
                 checkIn,
                 checkOut,
