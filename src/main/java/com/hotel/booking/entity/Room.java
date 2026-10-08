@@ -4,7 +4,6 @@ import com.hotel.booking.entity.enums.RoomType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 
 @Entity

@@ -25,7 +25,7 @@ public class BookingCreateRequestDTO {
     @Min(value = 1, message = "Number of guests must be at least 1.")
     private Integer numberOfGuests;
 
-    @NotNull(message = "Room id is required.")
+    @NotNull(message = "User id is required.")
     private Long userId;
     @NotNull(message = "Room id is required.")
     private Long roomId;

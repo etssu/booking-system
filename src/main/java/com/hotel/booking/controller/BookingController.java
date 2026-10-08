@@ -5,6 +5,7 @@ import com.hotel.booking.dto.BookingResponseDTO;
 import com.hotel.booking.dto.BookingStatusRequest;
 import com.hotel.booking.dto.BookingUpdateRequestDTO;
 import com.hotel.booking.service.BookingService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -32,12 +33,12 @@ public class BookingController {
 
     @PutMapping("/{id}")
     public ResponseEntity<BookingResponseDTO> updateBooking(@PathVariable Long id,
-            @RequestBody BookingUpdateRequestDTO request) {
+            @Valid @RequestBody BookingUpdateRequestDTO request) {
         return ResponseEntity.ok(bookingService.updateBooking(id, request));
     }
 
     @PostMapping
-    public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody BookingCreateRequestDTO request) {
+    public ResponseEntity<BookingResponseDTO> createBooking(@Valid @RequestBody BookingCreateRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(bookingService.createBooking(request));
     }
@@ -51,7 +52,7 @@ public class BookingController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<BookingResponseDTO> updateStatus(
             @PathVariable Long id,
-            @RequestBody BookingStatusRequest request
+            @Valid @RequestBody BookingStatusRequest request
     ) {
 
 
