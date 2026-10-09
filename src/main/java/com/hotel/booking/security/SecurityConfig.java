@@ -47,14 +47,24 @@ public class SecurityConfig {
                         .hasRole("ADMIN")
 
                         // bookings
+                        .requestMatchers(HttpMethod.PATCH, "/api/bookings/*/status")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/bookings/**")
+                        .hasRole("ADMIN")
+
                         .requestMatchers(HttpMethod.GET, "/api/bookings/**")
                         .hasAnyRole("GUEST", "ADMIN")
 
                         .requestMatchers(HttpMethod.POST, "/api/bookings/**")
                         .hasRole("GUEST")
 
-                        .requestMatchers(HttpMethod.PUT, "/api/bookings/*/status")
-                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/bookings/**")
+                        .hasAnyRole("GUEST", "ADMIN")
+
+                        .requestMatchers(HttpMethod.PATCH, "/api/bookings/*/cancel")
+                        .hasAnyRole("GUEST", "ADMIN")
+
 
                         .anyRequest().authenticated()
                 )
