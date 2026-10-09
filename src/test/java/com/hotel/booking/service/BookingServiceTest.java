@@ -93,20 +93,31 @@ public class BookingServiceTest {
 
         when(bookingRepository.findAll(pageable)).thenReturn(bookingPage);
 
-        Page<BookingResponseDTO> result = bookingService.getAllBookings(pageable);
+        Page<BookingResponseDTO> result = bookingService.getAllBookings(
+                pageable,
+                existingUser.getId(),
+                true
+        );
 
         assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getContent().getFirst().getId()).isEqualTo(existingBooking.getId());
+        assertThat(result.getContent().getFirst().getId())
+                .isEqualTo(existingBooking.getId());
 
         verify(bookingRepository).findAll(pageable);
+        verify(bookingRepository, never()).findByUserId(anyLong(), any(Pageable.class));
     }
 
     // get Booking By ID
     @Test
     void getBookingById_shouldReturnBooking() {
-        when(bookingRepository.findById(existingBooking.getId())).thenReturn(Optional.of(existingBooking));
+        when(bookingRepository.findById(existingBooking.getId()))
+                .thenReturn(Optional.of(existingBooking));
 
-        BookingResponseDTO result = bookingService.getBookingById(existingBooking.getId());
+        BookingResponseDTO result = bookingService.getBookingById(
+                existingBooking.getId(),
+                existingUser.getId(),
+                false
+        );
 
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getRoomId()).isEqualTo(existingBooking.getRoom().getId());
@@ -117,9 +128,13 @@ public class BookingServiceTest {
 
     @Test
     void getBookingById_shouldThrowException_whenBookingNotFound() {
-        when(bookingRepository.findById(99L)).thenReturn(Optional.empty());
+        when(bookingRepository.findById(99L))
+                .thenReturn(Optional.empty());
 
-        assertThrows(BookingNotFoundException.class, () -> bookingService.getBookingById(99L));
+        assertThrows(
+                BookingNotFoundException.class,
+                () -> bookingService.getBookingById(99L, existingUser.getId(), false)
+        );
     }
 
     // create a Booking
@@ -127,30 +142,35 @@ public class BookingServiceTest {
     void createBooking_shouldCreateBookingSuccessfully() {
         BookingCreateRequestDTO request = new BookingCreateRequestDTO();
         request.setRoomId(1L);
-        request.setUserId(1L);
         request.setCheckIn(LocalDate.of(2026, 10, 10));
         request.setCheckOut(LocalDate.of(2026, 10, 15));
         request.setNumberOfGuests(2);
 
-        when(roomRepository.findById(1L)).thenReturn(Optional.of(existingRoom));
-        when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
+        when(roomRepository.findById(1L))
+                .thenReturn(Optional.of(existingRoom));
 
-        when(bookingRepository.existsOverlappingBooking(existingRoom,
+        when(userRepository.findById(existingUser.getId()))
+                .thenReturn(Optional.of(existingUser));
+
+        when(bookingRepository.existsOverlappingBooking(
+                existingRoom,
                 request.getCheckIn(),
-                request.getCheckOut())).thenReturn(false);
-
+                request.getCheckOut()
+        )).thenReturn(false);
 
         when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> {
-                    Booking booking = invocation.getArgument(0);
-                    ReflectionTestUtils.setField(booking, "id", 1L);
-                    return booking;
-                });
+            Booking booking = invocation.getArgument(0);
+            ReflectionTestUtils.setField(booking, "id", 1L);
+            return booking;
+        });
 
-
-        BookingResponseDTO result = bookingService.createBooking(request);
+        BookingResponseDTO result = bookingService.createBooking(
+                request,
+                existingUser.getId()
+        );
 
         assertThat(result.getRoomId()).isEqualTo(1L);
-        assertThat(result.getUserId()).isEqualTo(1L);
+        assertThat(result.getUserId()).isEqualTo(existingUser.getId());
         assertThat(result.getStatus()).isEqualTo(BookingStatus.PENDING);
 
         verify(bookingRepository).save(any(Booking.class));
@@ -161,13 +181,16 @@ public class BookingServiceTest {
         BookingCreateRequestDTO request = new BookingCreateRequestDTO();
 
         request.setRoomId(99L);
-        request.setUserId(1L);
-        request.setCheckIn(LocalDate.of(2026, 8, 10));
-        request.setCheckOut(LocalDate.of(2026, 8, 15));
+        request.setCheckIn(LocalDate.of(2026, 10, 10));
+        request.setCheckOut(LocalDate.of(2026, 10, 15));
 
         when(roomRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(RoomNotFoundException.class, () -> bookingService.createBooking(request));
+        assertThrows(
+                RoomNotFoundException.class,
+                () -> bookingService.createBooking(request, existingUser.getId())
+        );
+
         verify(bookingRepository, never()).save(any());
     }
 
@@ -176,14 +199,17 @@ public class BookingServiceTest {
         BookingCreateRequestDTO request = new BookingCreateRequestDTO();
 
         request.setRoomId(1L);
-        request.setUserId(99L);
-        request.setCheckIn(LocalDate.of(2026, 8, 10));
-        request.setCheckOut(LocalDate.of(2026, 8, 15));
+        request.setCheckIn(LocalDate.of(2026, 10, 10));
+        request.setCheckOut(LocalDate.of(2026, 10, 15));
 
         when(roomRepository.findById(1L)).thenReturn(Optional.of(existingRoom));
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> bookingService.createBooking(request));
+        assertThrows(
+                UserNotFoundException.class,
+                () -> bookingService.createBooking(request, 99L)
+        );
+
         verify(bookingRepository, never()).save(any());
     }
 
@@ -192,20 +218,27 @@ public class BookingServiceTest {
         BookingCreateRequestDTO request = new BookingCreateRequestDTO();
 
         request.setRoomId(1L);
-        request.setUserId(1L);
         request.setNumberOfGuests(2);
         request.setCheckIn(LocalDate.of(2026, 10, 10));
         request.setCheckOut(LocalDate.of(2026, 10, 15));
 
-        when(roomRepository.findById(1L)).thenReturn(Optional.of(existingRoom));
+        when(roomRepository.findById(1L))
+                .thenReturn(Optional.of(existingRoom));
 
-        when(userRepository.findById(1L))
+        when(userRepository.findById(existingUser.getId()))
                 .thenReturn(Optional.of(existingUser));
 
-        when(bookingRepository.existsOverlappingBooking(existingRoom, request.getCheckIn(),
-                request.getCheckOut())).thenReturn(true);
+        when(bookingRepository.existsOverlappingBooking(
+                existingRoom,
+                request.getCheckIn(),
+                request.getCheckOut()
+        )).thenReturn(true);
 
-        assertThrows(IllegalArgumentException.class, () -> bookingService.createBooking(request));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> bookingService.createBooking(request, existingUser.getId())
+        );
+
         verify(bookingRepository, never()).save(any());
     }
 
@@ -214,16 +247,20 @@ public class BookingServiceTest {
         BookingCreateRequestDTO request = new BookingCreateRequestDTO();
 
         request.setRoomId(1L);
-        request.setUserId(1L);
-
         request.setCheckIn(LocalDate.of(2026, 10, 15));
         request.setCheckOut(LocalDate.of(2026, 10, 10));
-        when(userRepository.findById(1L))
+
+        when(userRepository.findById(existingUser.getId()))
                 .thenReturn(Optional.of(existingUser));
+
         when(roomRepository.findById(1L))
                 .thenReturn(Optional.of(existingRoom));
 
-        assertThrows(IllegalArgumentException.class, () -> bookingService.createBooking(request));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> bookingService.createBooking(request, existingUser.getId())
+        );
+
         verifyNoInteractions(bookingRepository);
     }
 

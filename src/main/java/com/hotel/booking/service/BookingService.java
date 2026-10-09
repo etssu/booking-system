@@ -29,12 +29,25 @@ public class BookingService {
         this.userRepository = userRepository;
     }
 
-    public Page<BookingResponseDTO> getAllBookings(Pageable pageable) {
-        return bookingRepository.findAll(pageable)
-                .map(this::convertToDTO);
+
+    public Page<BookingResponseDTO> getAllBookings(
+            Pageable pageable,
+            Long currentUserId,
+            boolean isAdmin
+    ) {
+        Page<Booking> bookings;
+
+        if (isAdmin) {
+            bookings = bookingRepository.findAll(pageable);
+        } else {
+            bookings = bookingRepository.findByUserId(currentUserId, pageable);
+        }
+
+        return bookings.map(this::convertToDTO);
     }
 
-    public BookingResponseDTO createBooking(BookingCreateRequestDTO request) {
+    public BookingResponseDTO createBooking(BookingCreateRequestDTO request,
+                                            Long currentUserId) {
         Booking booking = new Booking();
 
         booking.setCheckIn(request.getCheckIn());
@@ -44,7 +57,7 @@ public class BookingService {
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(RoomNotFoundException::new);
 
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findById(currentUserId)
                 .orElseThrow(UserNotFoundException::new);
 
         booking.setRoom(room);
@@ -66,9 +79,15 @@ public class BookingService {
         return convertToDTO(bookingRepository.save(booking));
     }
 
-    public BookingResponseDTO getBookingById(Long id) {
+    public BookingResponseDTO getBookingById(Long id,
+                                             Long currentUserId,
+                                             boolean isAdmin) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(BookingNotFoundException::new);
+
+        if (!isAdmin && !booking.getUser().getId().equals(currentUserId)) {
+            throw new BookingNotFoundException();
+        }
 
         return convertToDTO(booking);
     }
