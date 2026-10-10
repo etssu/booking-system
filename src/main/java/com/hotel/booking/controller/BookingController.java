@@ -49,8 +49,10 @@ public class BookingController {
 
     @PutMapping("/{id}")
     public ResponseEntity<BookingResponseDTO> updateBooking(@PathVariable Long id,
-            @Valid @RequestBody BookingUpdateRequestDTO request) {
-        return ResponseEntity.ok(bookingService.updateBooking(id, request));
+            @Valid @RequestBody BookingUpdateRequestDTO request,
+            @AuthenticationPrincipal CustomUserDetails currentUser
+    ) {
+        return ResponseEntity.ok(bookingService.updateBooking(id, request, currentUser.getUserId(), currentUser.isAdmin()));
     }
 
     @PostMapping

@@ -38,12 +38,6 @@ public class BookingUpdateRequestDTO {
     public void setNumberOfGuests(Integer numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
-    public Long getUserId() {
-        return userId;
-    }
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
     public Long getRoomId() {
         return roomId;
     }

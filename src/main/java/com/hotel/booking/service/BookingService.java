@@ -92,9 +92,20 @@ public class BookingService {
         return convertToDTO(booking);
     }
 
-    public BookingResponseDTO updateBooking(Long id, BookingUpdateRequestDTO updatedBooking) {
+    public BookingResponseDTO updateBooking(
+            Long id,
+            BookingUpdateRequestDTO updatedBooking,
+            Long currentUserId,
+            boolean isAdmin
+    ) {
+
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(BookingNotFoundException::new);
+
+        if (!booking.getUser().getId().equals(currentUserId) && !isAdmin) {
+            throw new BookingNotFoundException();
+        }
+
         booking.setCheckIn(updatedBooking.getCheckIn());
         booking.setCheckOut(updatedBooking.getCheckOut());
         booking.setNumberOfGuests(updatedBooking.getNumberOfGuests());
@@ -104,13 +115,6 @@ public class BookingService {
                     .orElseThrow(RoomNotFoundException::new);
 
             booking.setRoom(room);
-        }
-
-        if (updatedBooking.getUserId() != null) {
-            User user = userRepository.findById(updatedBooking.getUserId())
-                    .orElseThrow(UserNotFoundException::new);
-
-            booking.setUser(user);
         }
 
         validateBookingDates(booking);
