@@ -274,7 +274,6 @@ public class BookingServiceTest {
         request.setCheckOut(LocalDate.of(2026, 10, 25));
         request.setNumberOfGuests(2);
 
-
         when(bookingRepository.findById(1L)).thenReturn(Optional.of(existingBooking));
         when(roomRepository.findById(1L)).thenReturn(Optional.of(existingRoom));
 
@@ -287,7 +286,7 @@ public class BookingServiceTest {
 
         when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        BookingResponseDTO result = bookingService.updateBooking(1L, request);
+        BookingResponseDTO result = bookingService.updateBooking(1L, request, existingUser.getId(), false);
 
         assertThat(result.getRoomId()).isEqualTo(1L);
         assertThat(result.getNumberOfGuests()).isEqualTo(2);
@@ -299,7 +298,7 @@ public class BookingServiceTest {
     void updateBooking_shouldThrowException_whenBookingNotFound() {
         when(bookingRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(BookingNotFoundException.class, () -> bookingService.updateBooking(99L, new BookingUpdateRequestDTO()));
+        assertThrows(BookingNotFoundException.class, () -> bookingService.updateBooking(99L, new BookingUpdateRequestDTO(), existingUser.getId(), false));
         verify(bookingRepository, never()).save(any());
     }
 
@@ -320,7 +319,7 @@ public class BookingServiceTest {
 
         assertThrows(
                 RoomNotFoundException.class,
-                () -> bookingService.updateBooking(1L, request)
+                () -> bookingService.updateBooking(1L, request, existingUser.getId(), false)
         );
 
         verify(bookingRepository, never()).save(any());
@@ -350,7 +349,7 @@ public class BookingServiceTest {
 
         assertThrows(
                 IllegalArgumentException.class,
-                () -> bookingService.updateBooking(1L, request)
+                () -> bookingService.updateBooking(1L, request, existingUser.getId(), false)
         );
 
         verify(bookingRepository, never()).save(any());
