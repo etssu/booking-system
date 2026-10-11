@@ -15,7 +15,6 @@ public class BookingUpdateRequestDTO {
     @Min(value = 1, message = "Number of guests must be at least 1.")
     private Integer numberOfGuests;
 
-    private Long userId;
     private Long roomId;
 
     public LocalDate getCheckIn() {

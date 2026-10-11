@@ -25,8 +25,6 @@ public class BookingCreateRequestDTO {
     @Min(value = 1, message = "Number of guests must be at least 1.")
     private Integer numberOfGuests;
 
-    @NotNull(message = "User id is required.")
-    private Long userId;
     @NotNull(message = "Room id is required.")
     private Long roomId;
 
@@ -50,9 +48,7 @@ public class BookingCreateRequestDTO {
     public void setNumberOfGuests(Integer numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+
     public Long getRoomId() {
         return roomId;
     }
