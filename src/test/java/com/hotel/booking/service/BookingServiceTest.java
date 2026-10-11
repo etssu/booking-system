@@ -142,8 +142,8 @@ public class BookingServiceTest {
     void createBooking_shouldCreateBookingSuccessfully() {
         BookingCreateRequestDTO request = new BookingCreateRequestDTO();
         request.setRoomId(1L);
-        request.setCheckIn(LocalDate.of(2026, 10, 10));
-        request.setCheckOut(LocalDate.of(2026, 10, 15));
+        request.setCheckIn(LocalDate.of(2026, 10, 20));
+        request.setCheckOut(LocalDate.of(2026, 10, 25));
         request.setNumberOfGuests(2);
 
         when(roomRepository.findById(1L))
@@ -219,8 +219,8 @@ public class BookingServiceTest {
 
         request.setRoomId(1L);
         request.setNumberOfGuests(2);
-        request.setCheckIn(LocalDate.of(2026, 10, 10));
-        request.setCheckOut(LocalDate.of(2026, 10, 15));
+        request.setCheckIn(LocalDate.of(2026, 10, 20));
+        request.setCheckOut(LocalDate.of(2026, 10, 25));
 
         when(roomRepository.findById(1L))
                 .thenReturn(Optional.of(existingRoom));

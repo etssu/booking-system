@@ -132,7 +132,13 @@ public class BookingService {
         return convertToDTO(bookingRepository.save(booking));
     }
 
-    public BookingResponseDTO cancelBooking(Long id) {
+    public BookingResponseDTO cancelBooking(Long id, Long currentUserId, boolean isAdmin) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(BookingNotFoundException::new);
+
+        if (!booking.getUser().getId().equals(currentUserId) && !isAdmin) {
+            throw new BookingNotFoundException();
+        }
         return updateBookingStatus(id, BookingStatus.CANCELLED);
     }
 
