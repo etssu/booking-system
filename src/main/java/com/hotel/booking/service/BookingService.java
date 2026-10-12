@@ -162,7 +162,11 @@ public class BookingService {
         return convertToDTO(savedBooking);
     }
 
-    public List<BookingResponseDTO> getBookingsByUser(Long id) {
+    public List<BookingResponseDTO> getBookingsByUser(Long id, Long currentUserId, boolean isAdmin) {
+        if (!isAdmin && !id.equals(currentUserId)) {
+            throw new BookingNotFoundException();
+        }
+
         return bookingRepository.findByUserId(id).stream()
                 .map(this::convertToDTO)
                 .toList();
