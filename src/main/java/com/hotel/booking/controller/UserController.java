@@ -4,10 +4,13 @@ import com.hotel.booking.dto.BookingResponseDTO;
 import com.hotel.booking.dto.UserCreateRequestDTO;
 import com.hotel.booking.dto.UserResponseDTO;
 import com.hotel.booking.dto.UserUpdateRequestDTO;
+import com.hotel.booking.security.CustomUserDetails;
 import com.hotel.booking.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import com.hotel.booking.service.BookingService;
 
@@ -53,10 +56,11 @@ public class UserController {
 
     @GetMapping("/{id}/bookings")
     public ResponseEntity<List<BookingResponseDTO>> getUserBookings(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         return ResponseEntity.ok(
-                bookingService.getBookingsByUser(id)
+                bookingService.getBookingsByUser(id, userDetails.getUserId(), userDetails.isAdmin())
         );
     }
 }

@@ -356,6 +356,93 @@ public class BookingServiceTest {
     }
 
     @Test
+    void cancelBooking_shouldCancelOwnBooking() {
+        existingBooking.setStatus(BookingStatus.CONFIRMED);
+
+        when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(existingBooking));
+
+        when(bookingRepository.save(any(Booking.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        BookingResponseDTO result = bookingService.cancelBooking(
+                1L,
+                existingUser.getId(),
+                false
+        );
+
+        assertThat(result.getStatus()).isEqualTo(BookingStatus.CANCELLED);
+
+        verify(bookingRepository).save(existingBooking);
+    }
+
+    @Test
+    void cancelBooking_shouldThrowException_whenGuestCancelsAnotherUsersBooking() {
+        when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(existingBooking));
+
+        assertThrows(
+                BookingNotFoundException.class,
+                () -> bookingService.cancelBooking(1L, 2L, false)
+        );
+
+        verify(bookingRepository, never()).save(any(Booking.class));
+    }
+
+    @Test
+    void cancelBooking_shouldAllowAdminToCancelAnotherUsersBooking() {
+        existingBooking.setStatus(BookingStatus.CONFIRMED);
+
+        when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(existingBooking));
+
+        when(bookingRepository.save(any(Booking.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        BookingResponseDTO result = bookingService.cancelBooking(1L, 2L, true);
+
+        assertThat(result.getStatus()).isEqualTo(BookingStatus.CANCELLED);
+
+        verify(bookingRepository).save(existingBooking);
+    }
+
+    @Test
+    void cancelBooking_shouldThrowException_whenBookingIsCompleted() {
+        existingBooking.setStatus(BookingStatus.COMPLETED);
+
+        when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(existingBooking));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> bookingService.cancelBooking(
+                        1L,
+                        existingUser.getId(),
+                        false
+                )
+        );
+
+        verify(bookingRepository, never()).save(any(Booking.class));
+    }
+
+    @Test
+    void cancelBooking_shouldThrowException_whenBookingNotFound() {
+        when(bookingRepository.findById(99L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                BookingNotFoundException.class,
+                () -> bookingService.cancelBooking(
+                        99L,
+                        existingUser.getId(),
+                        false
+                )
+        );
+
+        verify(bookingRepository, never()).save(any(Booking.class));
+    }
+
+    @Test
     void deleteBooking_shouldDeleteBooking() {
         when(bookingRepository.findById(1L)).thenReturn(Optional.of(existingBooking));
 
