@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -481,5 +482,36 @@ public class BookingServiceTest {
                         BookingStatus.CONFIRMED));
 
         verify(bookingRepository, never()).save(any());
+    }
+
+    @Test
+    void updateBooking_guestCannotModifyCancelledBooking() {
+        existingBooking.setStatus(BookingStatus.CANCELLED);
+
+        when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(existingBooking));
+
+        BookingUpdateRequestDTO request = new BookingUpdateRequestDTO();
+        request.setCheckIn(existingBooking.getCheckIn());
+        request.setCheckOut(existingBooking.getCheckOut());
+        request.setNumberOfGuests(existingBooking.getNumberOfGuests());
+        request.setRoomId(existingBooking.getRoom().getId());
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> bookingService.updateBooking(
+                        1L,
+                        request,
+                        existingBooking.getUser().getId(),
+                        false
+                )
+        );
+
+        assertEquals(
+                "Booking cannot be modified in its current status.",
+                exception.getMessage()
+        );
+
+        verify(bookingRepository, never()).save(any(Booking.class));
     }
 }

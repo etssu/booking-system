@@ -106,6 +106,10 @@ public class BookingService {
             throw new BookingNotFoundException();
         }
 
+        if (!isAdmin && !booking.getStatus().equals(BookingStatus.PENDING) && !booking.getStatus().equals(BookingStatus.CONFIRMED)) {
+            throw new IllegalArgumentException("Booking cannot be modified in its current status.");
+        }
+
         booking.setCheckIn(updatedBooking.getCheckIn());
         booking.setCheckOut(updatedBooking.getCheckOut());
         booking.setNumberOfGuests(updatedBooking.getNumberOfGuests());
