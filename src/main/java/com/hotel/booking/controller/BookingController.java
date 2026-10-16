@@ -76,7 +76,6 @@ public class BookingController {
             @PathVariable Long id,
             @Valid @RequestBody BookingStatusRequest request
     ) {
-        System.out.println("PATCH /bookings/{id}/status reached controller");
         return ResponseEntity.ok(bookingService.updateBookingStatus(id, request.getStatus()));
     }
 
