@@ -1,5 +1,6 @@
 package com.hotel.booking.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,12 @@ public class SecurityConfig {
     ) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                                response.sendError(HttpServletResponse.SC_FORBIDDEN))
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
                         .permitAll()
@@ -30,8 +37,23 @@ public class SecurityConfig {
                         .permitAll()
 
                         // users
-                        .requestMatchers(HttpMethod.POST, "/api/users/**")
+                        .requestMatchers(HttpMethod.POST, "/api/users")
                         .permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/users")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/users/{id}")
+                        .hasAnyRole("ADMIN", "GUEST")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/users/{id}")
+                        .hasAnyRole("ADMIN", "GUEST")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/{id}")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/api/users/{id}/bookings")
+                        .hasAnyRole("ADMIN", "GUEST")
 
                         // rooms
                         .requestMatchers(HttpMethod.GET, "/api/rooms/**")
