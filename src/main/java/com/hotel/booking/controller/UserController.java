@@ -32,13 +32,19 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+    public ResponseEntity<UserResponseDTO> getUserById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails currentUser
+    ) {
+        return ResponseEntity.ok(userService.getUserById(id, currentUser.getUserId(), currentUser.isAdmin()));
     }
 
     @PutMapping("/{id}")
-    public UserResponseDTO updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateRequestDTO request) {
-        return userService.updateUser(id, request);
+    public UserResponseDTO updateUser(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails currentUser,
+            @Valid @RequestBody UserUpdateRequestDTO request) {
+        return userService.updateUser(id, currentUser.getUserId(), currentUser.isAdmin(), request);
     }
 
     @PostMapping

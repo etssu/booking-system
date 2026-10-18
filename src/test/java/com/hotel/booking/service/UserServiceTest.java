@@ -64,20 +64,42 @@ public class UserServiceTest {
 
     // get user by ID
     @Test
-    void getUserById_shouldReturnDto_whenUserExists() {
-        when(userRepository.findById(existingUser.getId())).thenReturn(Optional.of(existingUser));
+    void getUserById_shouldReturnDto_whenUserIsOwner() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
 
-        UserResponseDTO result = userService.getUserById(existingUser.getId());
+        UserResponseDTO result = userService.getUserById(1L, 1L, false);
 
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getUsername()).isEqualTo("johndoe");
     }
 
     @Test
+    void getUserById_shouldReturnDto_whenAdminRequestsOtherUser() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
+
+        UserResponseDTO result = userService.getUserById(1L, 99L, true);
+
+        assertThat(result.getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void getUserById_shouldThrowException_whenGuestRequestsOtherUser() {
+        assertThrows(
+                UserNotFoundException.class,
+                () -> userService.getUserById(1L, 99L, false)
+        );
+
+        verify(userRepository, never()).findById(anyLong());
+    }
+
+    @Test
     void getUserById_shouldThrowException_whenUserNotFound() {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.getUserById(99L));
+        assertThrows(
+                UserNotFoundException.class,
+                () -> userService.getUserById(99L, 99L, false)
+        );
     }
 
     // create User
@@ -111,25 +133,53 @@ public class UserServiceTest {
 
     // update user
     @Test
-    void updateUser_shouldUpdateOnlyProvidedFields() {
+    void updateUser_shouldUpdateProvidedFields_whenUserIsOwner() {
         UserUpdateRequestDTO request = new UserUpdateRequestDTO();
         request.setEmail("newemail@mail.com");
         request.setPassword("passw123");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
-        when(userRepository.existsByEmailAndIdNot("newemail@mail.com", 1L)).thenReturn(false);
+        when(userRepository.existsByEmailAndIdNot("newemail@mail.com", 1L))
+                .thenReturn(false);
         when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
         when(passwordEncoder.encode("passw123")).thenReturn("encodedPassword");
 
-        UserResponseDTO result = userService.updateUser(1L, request);
+        UserResponseDTO result = userService.updateUser(1L, 1L, false, request);
 
         assertThat(result.getEmail()).isEqualTo("newemail@mail.com");
-        // username shouldnt change
         assertThat(result.getUsername()).isEqualTo("johndoe");
         assertThat(existingUser.getPassword()).isEqualTo("encodedPassword");
 
-        verify(userRepository, never()).existsByUsernameAndIdNot(anyString(), anyLong());
         verify(passwordEncoder).encode("passw123");
+        verify(userRepository).save(existingUser);
+    }
+
+    @Test
+    void updateUser_shouldAllowAdminToUpdateOtherUser() {
+        UserUpdateRequestDTO request = new UserUpdateRequestDTO();
+        request.setFirstName("Updated");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        UserResponseDTO result = userService.updateUser(1L, 99L, true, request);
+
+        assertThat(result.getFirstName()).isEqualTo("Updated");
+        verify(userRepository).save(existingUser);
+    }
+
+    @Test
+    void updateUser_shouldThrowException_whenGuestUpdatesOtherUser() {
+        UserUpdateRequestDTO request = new UserUpdateRequestDTO();
+        request.setFirstName("Hacked");
+
+        assertThrows(
+                UserNotFoundException.class,
+                () -> userService.updateUser(1L, 99L, false, request)
+        );
+
+        verify(userRepository, never()).findById(anyLong());
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test

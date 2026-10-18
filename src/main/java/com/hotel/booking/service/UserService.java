@@ -9,6 +9,7 @@ import com.hotel.booking.exception.EmailAlreadyExistsException;
 import com.hotel.booking.exception.UserNotFoundException;
 import com.hotel.booking.exception.UsernameAlreadyExistsException;
 import com.hotel.booking.repository.UserRepository;
+import com.hotel.booking.security.CustomUserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,11 @@ public class UserService {
                 .toList();
     }
 
-    public UserResponseDTO getUserById(Long id) {
+    public UserResponseDTO getUserById(Long id, Long currentUserId, boolean isAdmin) {
+        if (!isAdmin && !currentUserId.equals(id)) {
+            throw new UserNotFoundException();
+        }
+
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         return convertToDTO(user);
@@ -56,7 +61,11 @@ public class UserService {
         return convertToDTO(userRepository.save(user));
     }
 
-    public UserResponseDTO updateUser(Long id, UserUpdateRequestDTO request) {
+    public UserResponseDTO updateUser(Long id, Long currentUserId, boolean isAdmin, UserUpdateRequestDTO request) {
+        if (!isAdmin && !currentUserId.equals(id)) {
+            throw new UserNotFoundException();
+        }
+
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
 
