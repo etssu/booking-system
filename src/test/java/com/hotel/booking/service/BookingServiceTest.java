@@ -37,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import org.springframework.security.access.AccessDeniedException;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
@@ -143,8 +144,8 @@ public class BookingServiceTest {
     void createBooking_shouldCreateBookingSuccessfully() {
         BookingCreateRequestDTO request = new BookingCreateRequestDTO();
         request.setRoomId(1L);
-        request.setCheckIn(LocalDate.of(2026, 10, 20));
-        request.setCheckOut(LocalDate.of(2026, 10, 25));
+        request.setCheckIn(LocalDate.of(2026, 12, 20));
+        request.setCheckOut(LocalDate.of(2026, 12, 25));
         request.setNumberOfGuests(2);
 
         when(roomRepository.findById(1L))
@@ -220,8 +221,8 @@ public class BookingServiceTest {
 
         request.setRoomId(1L);
         request.setNumberOfGuests(2);
-        request.setCheckIn(LocalDate.of(2026, 10, 20));
-        request.setCheckOut(LocalDate.of(2026, 10, 25));
+        request.setCheckIn(LocalDate.of(2026, 12, 20));
+        request.setCheckOut(LocalDate.of(2026, 12, 25));
 
         when(roomRepository.findById(1L))
                 .thenReturn(Optional.of(existingRoom));
@@ -271,8 +272,8 @@ public class BookingServiceTest {
         BookingUpdateRequestDTO request = new BookingUpdateRequestDTO();
 
         request.setRoomId(1L);
-        request.setCheckIn(LocalDate.of(2026, 10, 20));
-        request.setCheckOut(LocalDate.of(2026, 10, 25));
+        request.setCheckIn(LocalDate.of(2026, 12, 20));
+        request.setCheckOut(LocalDate.of(2026, 12, 25));
         request.setNumberOfGuests(2);
 
         when(bookingRepository.findById(1L)).thenReturn(Optional.of(existingBooking));
@@ -331,8 +332,8 @@ public class BookingServiceTest {
         BookingUpdateRequestDTO request = new BookingUpdateRequestDTO();
 
         request.setRoomId(1L);
-        request.setCheckIn(LocalDate.of(2026, 10, 20));
-        request.setCheckOut(LocalDate.of(2026, 10, 25));
+        request.setCheckIn(LocalDate.of(2026, 12, 20));
+        request.setCheckOut(LocalDate.of(2026, 12, 25));
         request.setNumberOfGuests(2);
 
         when(bookingRepository.findById(1L))
@@ -461,25 +462,53 @@ public class BookingServiceTest {
 
     // update booking status
     @Test
-    void updateBookingStatus_shouldUpdateStatus() {
+    void updateBookingStatus_adminCanUpdateStatus() {
         existingBooking.setStatus(BookingStatus.PENDING);
-        when(bookingRepository.findById(1L)).thenReturn(Optional.of(existingBooking));
-        when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        BookingResponseDTO result = bookingService.updateBookingStatus(1L, BookingStatus.CONFIRMED);
+        when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(existingBooking));
+
+        when(bookingRepository.save(any(Booking.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        BookingResponseDTO result = bookingService.updateBookingStatus(
+                1L,
+                BookingStatus.CONFIRMED,
+                true
+        );
 
         assertThat(result.getStatus()).isEqualTo(BookingStatus.CONFIRMED);
         verify(bookingRepository).save(existingBooking);
     }
 
     @Test
+    void updateBookingStatus_guestCannotUpdateStatus() {
+        assertThrows(
+                AccessDeniedException.class,
+                () -> bookingService.updateBookingStatus(
+                        1L,
+                        BookingStatus.CONFIRMED,
+                        false
+                )
+        );
+
+        verifyNoInteractions(bookingRepository);
+    }
+    @Test
     void updateBookingStatus_shouldThrowException_whenTransitionInvalid() {
         existingBooking.setStatus(BookingStatus.CANCELLED);
 
-        when(bookingRepository.findById(1L)).thenReturn(Optional.of(existingBooking));
+        when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(existingBooking));
 
-        assertThrows(IllegalArgumentException.class, () -> bookingService.updateBookingStatus(1L,
-                        BookingStatus.CONFIRMED));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> bookingService.updateBookingStatus(
+                        1L,
+                        BookingStatus.CONFIRMED,
+                        true
+                )
+        );
 
         verify(bookingRepository, never()).save(any());
     }

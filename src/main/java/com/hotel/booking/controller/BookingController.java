@@ -74,9 +74,16 @@ public class BookingController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<BookingResponseDTO> updateStatus(
             @PathVariable Long id,
-            @Valid @RequestBody BookingStatusRequest request
+            @Valid @RequestBody BookingStatusRequest request,
+            @AuthenticationPrincipal CustomUserDetails currentUser
     ) {
-        return ResponseEntity.ok(bookingService.updateBookingStatus(id, request.getStatus()));
+        return ResponseEntity.ok(
+                bookingService.updateBookingStatus(
+                        id,
+                        request.getStatus(),
+                        currentUser.isAdmin()
+                )
+        );
     }
 
     @PatchMapping("/{id}/cancel")

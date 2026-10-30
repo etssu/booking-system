@@ -11,6 +11,7 @@ import com.hotel.booking.exception.UserNotFoundException;
 import com.hotel.booking.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -44,6 +45,20 @@ public class BookingService {
         }
 
         return bookings.map(this::convertToDTO);
+    }
+
+    private BookingResponseDTO changeBookingStatus(Long id, BookingStatus status) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(BookingNotFoundException::new);
+
+        if (!isValidTransition(booking.getStatus(), status)) {
+            throw new IllegalArgumentException("Invalid booking status transition");
+        }
+
+        booking.setStatus(status);
+        Booking savedBooking = bookingRepository.save(booking);
+
+        return convertToDTO(savedBooking);
     }
 
     public BookingResponseDTO createBooking(BookingCreateRequestDTO request,
@@ -143,7 +158,7 @@ public class BookingService {
         if (!booking.getUser().getId().equals(currentUserId) && !isAdmin) {
             throw new BookingNotFoundException();
         }
-        return updateBookingStatus(id, BookingStatus.CANCELLED);
+        return changeBookingStatus(id, BookingStatus.CANCELLED);
     }
 
     public void deleteBooking(Long id) {
@@ -153,17 +168,16 @@ public class BookingService {
         bookingRepository.delete(booking);
     }
 
-    public BookingResponseDTO updateBookingStatus(Long id, BookingStatus status) {
-        Booking booking = bookingRepository.findById(id).orElseThrow(BookingNotFoundException::new);
-
-        if (!isValidTransition(booking.getStatus(), status)) {
-            throw new IllegalArgumentException("Invalid booking status transition");
+    public BookingResponseDTO updateBookingStatus(
+            Long id,
+            BookingStatus status,
+            boolean isAdmin
+    ) {
+        if (!isAdmin) {
+            throw new AccessDeniedException("Only ADMIN can change booking status.");
         }
 
-        booking.setStatus(status);
-        Booking savedBooking = bookingRepository.save(booking);
-
-        return convertToDTO(savedBooking);
+        return changeBookingStatus(id, status);
     }
 
     public List<BookingResponseDTO> getBookingsByUser(Long id, Long currentUserId, boolean isAdmin) {
