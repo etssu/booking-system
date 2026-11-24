@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="Explore available rooms and find the perfect stay with StayFinder.">
+
+    <title>Rooms | StayFinder</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/rooms.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+
+            <a href="../index.html" class="logo">
+                StayFinder
+            </a>
+
+            <nav class="nav">
+                <a href="rooms.html" class="active">Rooms</a>
+                <a href="deals.html">Deals</a>
+                <a href="bookings.html">My bookings</a>
+                <a href="support.html">Support</a>
+            </nav>
+
+            <div class="header-actions">
+                <a href="list-property.html" class="link-button">
+                    List your property
+                </a>
+                <a href="login.html" class="sign-in-button">
+                    Sign in
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <main>
+        <section class="rooms-page">
+            <div class="container">
+
+                <div class="rooms-header">
+                    <h1>Find your perfect stay</h1>
+                    <p>
+                        Explore our available rooms and choose the perfect place
+                        for your next trip.
+                    </p>
+                </div>
+
+                <form class="rooms-filter" id="roomsFilter" method="GET">
+
+                    <div class="filter-field">
+                        <label for="checkIn">Check-in date</label>
+                        <input
+                            type="date"
+                            id="checkIn"
+                            name="checkIn"
+                            required
+                        >
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="checkOut">Check-out date</label>
+                        <input
+                            type="date"
+                            id="checkOut"
+                            name="checkOut"
+                            required
+                        >
+                    </div>
+
+                    <div class="filter-field">
+                        <label for="guestsInput">Guests</label>
+                        <input
+                            type="number"
+                            id="guestsInput"
+                            name="guests"
+                            value="2"
+                            min="1"
+                            max="20"
+                            required
+                        >
+                    </div>
+
+                    <button class="filter-button" type="submit">
+                        Search rooms
+                    </button>
+
+                </form>
+
+                <div class="rooms-results">
+
+                    <div class="results-header">
+                        <div>
+                            <h2>Available rooms</h2>
+                            <p class="results-text" id="resultsText">
+                                Discover our selection of comfortable rooms.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="rooms-grid" id="roomsGrid">
+                        <!-- Room cards will be rendered here using JavaScript. -->
+                    </div>
+
+                    <div class="empty-state" id="emptyState" hidden>
+                        <h3>No rooms found</h3>
+                        <p>
+                            Try changing your dates or the number of guests.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <a href="../index.html" class="logo">StayFinder</a>
+
+            <p>
+                Find your place. Make yourself at home.
+            </p>
+
+            <span>&copy; 2026 StayFinder. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <script src="../js/rooms.js" defer></script>
+
+</body>
+</html>

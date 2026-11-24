@@ -1,0 +1,577 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+/* =========================
+   1. GLOBAL STYLES
+========================= */
+
+:root {
+    --primary: #263D36;
+    --primary-light: #49685A;
+    --accent: #C49A6C;
+
+    --background: #F8F7F3;
+    --surface: #FFFFFF;
+    --surface-soft: #EFEDE6;
+
+    --text: #26332D;
+    --text-light: #788079;
+    --border: #E7E5DE;
+
+    --shadow: 0 8px 30px rgba(38, 61, 54, 0.07);
+    --shadow-hover: 0 16px 40px rgba(38, 61, 54, 0.12);
+
+    --radius: 16px;
+    --transition: 0.25s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--background);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.container {
+    width: min(1160px, 90%);
+    margin: 0 auto;
+}
+
+
+/* =========================
+   2. HEADER
+========================= */
+
+.header {
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    min-height: 82px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 29px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: -1px;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.nav a {
+    color: var(--text-light);
+    font-size: 14px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.nav a:hover {
+    color: var(--primary);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.link-button:hover {
+    color: var(--accent);
+}
+
+.sign-in-button {
+    background-color: var(--primary);
+    color: white;
+    padding: 11px 23px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.sign-in-button:hover {
+    background-color: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   3. HERO SECTION
+========================= */
+
+.hero {
+    padding: 100px 0 110px;
+    background:
+        radial-gradient(
+            ellipse at 85% 20%,
+            rgba(196, 154, 108, 0.15),
+            transparent 35%
+        ),
+        linear-gradient(135deg, #F0EFE8, #F8F7F3);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.hero h1 {
+    max-width: 700px;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 6vw, 68px);
+    line-height: 1.15;
+    color: var(--primary);
+    margin-bottom: 22px;
+    letter-spacing: -1.5px;
+}
+
+.hero > .container > p {
+    max-width: 560px;
+    font-size: 17px;
+    color: var(--text-light);
+    margin-bottom: 42px;
+}
+
+
+/* =========================
+   4. SEARCH FORM
+========================= */
+
+.search-box {
+    background: var(--surface);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-hover);
+    max-width: 1050px;
+}
+
+.search-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--primary);
+    margin-bottom: 22px;
+}
+
+.search-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.8fr auto;
+    gap: 16px;
+    align-items: end;
+}
+
+.search-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.search-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.search-field input {
+    width: 100%;
+    padding: 13px 14px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    color: var(--text);
+    transition: var(--transition);
+}
+
+.search-field input:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(73, 104, 90, 0.1);
+}
+
+.search-button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.search-button:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   5. GENERAL SECTIONS
+========================= */
+
+.features-section,
+.room-types-section,
+.how-section {
+    padding: 90px 0;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 4vw, 40px);
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.section-header p {
+    color: var(--text-light);
+    font-size: 15px;
+}
+
+
+/* =========================
+   6. FEATURES
+========================= */
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.feature-card {
+    background: var(--surface);
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+}
+
+.feature-card h3 {
+    color: var(--primary);
+    font-size: 19px;
+    margin-bottom: 12px;
+}
+
+.feature-card p {
+    color: var(--text-light);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+
+/* =========================
+   7. ROOM TYPES
+========================= */
+
+.room-types-section {
+    background-color: var(--surface-soft);
+}
+
+.room-types-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.room-type-card {
+    background: var(--surface);
+    padding: 32px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    transition: var(--transition);
+}
+
+.room-type-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.room-type-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.room-type-card > p {
+    color: var(--text-light);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.room-details {
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+    margin-bottom: 20px;
+}
+
+.room-details summary {
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.room-details p {
+    color: var(--text-light);
+    font-size: 13px;
+    padding-top: 12px;
+}
+
+.room-type-card > a {
+    display: inline-block;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 3px;
+    transition: var(--transition);
+}
+
+.room-type-card > a:hover {
+    color: var(--accent);
+}
+
+
+/* =========================
+   8. HOW IT WORKS
+========================= */
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.step-card {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.step-card span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 55px;
+    height: 55px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 22px;
+}
+
+.step-card h3 {
+    color: var(--primary);
+    font-size: 19px;
+    margin-bottom: 10px;
+}
+
+.step-card p {
+    color: var(--text-light);
+    font-size: 14px;
+}
+
+
+/* =========================
+   9. FOOTER
+========================= */
+
+.footer {
+    background: var(--primary);
+    color: white;
+    padding: 55px 0 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    padding-bottom: 40px;
+}
+
+.footer h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 27px;
+    margin-bottom: 12px;
+}
+
+.footer-content p {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 14px;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    align-items: center;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.footer-links a:hover {
+    color: white;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 20px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+}
+
+
+/* =========================
+   10. RESPONSIVE DESIGN
+========================= */
+
+@media (max-width: 900px) {
+    .header-content {
+        flex-wrap: wrap;
+        padding: 15px 0;
+    }
+
+    .nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        gap: 25px;
+    }
+
+    .search-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .search-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 650px) {
+    .header-content {
+        gap: 15px;
+    }
+
+    .logo {
+        font-size: 25px;
+    }
+
+    .header-actions {
+        gap: 10px;
+    }
+
+    .link-button {
+        display: none;
+    }
+
+    .nav {
+        gap: 16px;
+        justify-content: space-between;
+    }
+
+    .nav a {
+        font-size: 12px;
+    }
+
+    .hero {
+        padding: 65px 0 75px;
+    }
+
+    .hero h1 {
+        font-size: 42px;
+    }
+
+    .hero > .container > p {
+        font-size: 15px;
+    }
+
+    .search-box {
+        padding: 22px;
+    }
+
+    .search-row {
+        grid-template-columns: 1fr;
+    }
+
+    .features-section,
+    .room-types-section,
+    .how-section {
+        padding: 65px 0;
+    }
+
+    .features-grid,
+    .room-types-grid,
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-content {
+        flex-direction: column;
+    }
+
+    .footer-links {
+        gap: 15px;
+    }
+}
